@@ -12,12 +12,17 @@ namespace ProductManager
             {
                 Dictionary<string, Product> products = new Dictionary<string, Product>();
 
-                while (true)
+                Dictionary<string, ProductCategory> productCategory = new Dictionary<string, ProductCategory>();
+
+            while (true)
                 {
                     WriteLine("1. Add product");
                     WriteLine("2. Search product");
                     WriteLine("3. Add category");
-                    WriteLine("4. Exit");
+                    WriteLine("4. Add product to category");
+                    WriteLine("5. List categories");
+                    WriteLine("6. Exit");
+
 
                     ConsoleKeyInfo input;
 
@@ -124,8 +129,6 @@ namespace ProductManager
                         case ConsoleKey.D3:
                         case ConsoleKey.NumPad3:
 
-                        Dictionary<string, ProductCategory> productCategory = new Dictionary<string, ProductCategory>();
-
 
                         string categoryname, description, imageURL;             
 
@@ -175,10 +178,59 @@ namespace ProductManager
                          */
 
                         break;
-                
+
+                    case ConsoleKey.D4:
+                    case ConsoleKey.NumPad4:
+
+                        string produktArticleNumber = ReadLine();
                      
-                     case ConsoleKey.D4:
-                     case ConsoleKey.NumPad4:
+                    if (products.ContainsKey(produktArticleNumber))
+
+                    {
+                            Product a = products[produktArticleNumber];
+
+                            Write("Category name: ");
+
+                            string categoryName = ReadLine();
+
+                            if (productCategory.ContainsKey(categoryName))
+                            {
+                                productCategory[categoryName].AddProduct(a);
+                               
+                                WriteLine("Product added to category");
+                            }
+                            else
+                            {
+                                WriteLine("Product not found");
+                            }
+
+                            Thread.Sleep(2000);
+                            
+                            while (Console.ReadKey().Key != ConsoleKey.Escape) ;
+
+                          
+                        }
+                        else 
+                        {
+                            WriteLine("Product not found");
+
+                            Thread.Sleep(2000);
+                        }
+                        break;
+
+                    case ConsoleKey.D5:
+                    case ConsoleKey.NumPad5:
+
+                        // TODO: Вывести шапку таблицы (2 строки)
+                        foreach(ProductCategory cat in productCategory.Values)
+                        {
+                            // TODO:^Вывести имя категории  (cat.Products.Count)
+                            // Сделать вложенный цикл по продуктам и вывести их с отступом
+                        }
+                        break;
+
+                    case ConsoleKey.D6:
+                     case ConsoleKey.NumPad6:
                            return;
 
                     }
