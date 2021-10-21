@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace ProductManager
 {
-    class ProductCategory
+    public class ProductCategory
     {
-        public string Name;
+        public string Name { get; private set; }
 
-        public string Description;
+        public string Description { get; private set; }
 
-        public string ImageURL;
+        public string ImageURL { get; private set; }
 
         public List<Product> Products;
         public void AddProduct(Product product) { Products.Add(product);}
@@ -24,7 +24,8 @@ namespace ProductManager
             Description = description;
             ImageURL = imageURL;
             Products = new List<Product>();
+           
         }
-
+       
     }
 }

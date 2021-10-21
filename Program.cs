@@ -10,9 +10,17 @@ namespace ProductManager
             {
             static void Main(string[] args)
             {
-                Dictionary<string, Product> products = new Dictionary<string, Product>();
-
+                Dictionary<string, Product> products = new Dictionary<string, Product>();            
                 Dictionary<string, ProductCategory> productCategory = new Dictionary<string, ProductCategory>();
+
+            /*Product tp = new Product();
+            tp.Name = "T-Shirts";
+            tp.Price = 200;
+            products.Add(tp.Name, tp);
+
+            ProductCategory tpc = new ProductCategory("Clothes", "...", "...");
+            tpc.Products.Add(tp);
+            productCategory.Add(tpc.Name, tpc);*/
 
             while (true)
                 {
@@ -36,7 +44,9 @@ namespace ProductManager
                     invalidChoice = !(input.Key == ConsoleKey.D1 || input.Key == ConsoleKey.NumPad1
                                    || input.Key == ConsoleKey.D2 || input.Key == ConsoleKey.NumPad2
                                    || input.Key == ConsoleKey.D3 || input.Key == ConsoleKey.NumPad3
-                                   || input.Key == ConsoleKey.D4 || input.Key == ConsoleKey.NumPad4);                    }
+                                   || input.Key == ConsoleKey.D4 || input.Key == ConsoleKey.NumPad4
+                                   || input.Key == ConsoleKey.D5 || input.Key == ConsoleKey.NumPad5
+                                   || input.Key == ConsoleKey.D6 || input.Key == ConsoleKey.NumPad6);                    }
                     while (invalidChoice);
 
                     Clear();
@@ -70,7 +80,7 @@ namespace ProductManager
                             p.ImageURL = ReadLine();
 
                             SetCursorPosition(8, 4);
-                            p.Price = Convert.ToDouble(ReadLine());
+                            p.Price = Convert.ToDecimal(ReadLine());
 
                             Write("Is this correct Y(es) N(o)");
 
@@ -139,7 +149,6 @@ namespace ProductManager
                             WriteLine("Image URL:");
 
                             SetCursorPosition(6, 0);
-                            
                             categoryname = ReadLine();
 
                             SetCursorPosition(12, 1);
@@ -182,12 +191,12 @@ namespace ProductManager
                     case ConsoleKey.D4:
                     case ConsoleKey.NumPad4:
 
-                        string produktArticleNumber = ReadLine();
+                        string productArticleNumber = ReadLine();
                      
-                    if (products.ContainsKey(produktArticleNumber))
+                    if (products.ContainsKey(productArticleNumber))
 
                     {
-                            Product a = products[produktArticleNumber];
+                            Product a = products[productArticleNumber];
 
                             Write("Category name: ");
 
@@ -215,23 +224,43 @@ namespace ProductManager
                             WriteLine("Product not found");
 
                             Thread.Sleep(2000);
-                        }
+                        } 
                         break;
 
                     case ConsoleKey.D5:
                     case ConsoleKey.NumPad5:
 
                         // TODO: Вывести шапку таблицы (2 строки)
-                        foreach(ProductCategory cat in productCategory.Values)
+                       
+                        
+                        WriteLine("Name                         Price");
+                        WriteLine("-------------------------------------------------");
+
+                        foreach (ProductCategory cat in productCategory.Values)
                         {
+                            WriteLine(cat.Name+" ("+cat.Products.Count+")");
+                           
+                            foreach(Product product in cat.Products)
+                            {
+                                WriteLine("  "+ product.Name + "\t\t" + product.Price);
+
+                            }
+                           /* Write( [productCategory.Count] + "\t");*/
+                            
                             // TODO:^Вывести имя категории  (cat.Products.Count)
                             // Сделать вложенный цикл по продуктам и вывести их с отступом
+
+                            
                         }
+
+                        while (Console.ReadKey().Key != ConsoleKey.Escape) ;
+
                         break;
 
-                    case ConsoleKey.D6:
+                     case ConsoleKey.D6:
                      case ConsoleKey.NumPad6:
-                           return;
+                           
+                        return;
 
                     }
                 

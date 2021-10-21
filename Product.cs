@@ -8,14 +8,14 @@ namespace ProductManager
 { 
     public class Product
     {
-        public string ArticleNumber;
+        public string ArticleNumber { get; set; }
 
-        public string Name;
+        public string Name { get; set; }
 
-        public string Description;
+        public string Description { get; set; }
 
-        public string ImageURL;
+        public string ImageURL { get; set; }
 
-        public double Price;   
-        }
+        public decimal Price { get; set; }
+    }
 }
