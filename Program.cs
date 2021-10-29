@@ -5,51 +5,98 @@ using System.Threading;
 
 namespace ProductManager
 {
-            class Program
-            
-            {
-            static void Main(string[] args)
-            {
-                Dictionary<string, Product> products = new Dictionary<string, Product>();            
-                Dictionary<string, ProductCategory> productCategory = new Dictionary<string, ProductCategory>();
+    class Program
 
-            /*Product tp = new Product();
+    {
+        static void Print(Product p)
+        {
+            WriteLine($"Articel number:{p.ArticleNumber}");
+            WriteLine($"Name: {p.Name}");
+            WriteLine($"Description: {p.Description}");
+            WriteLine($"Image URL: {p.ImageURL}");
+            WriteLine($"Price: {p.Price}");
+        }
+        static void PopulateData(Dictionary<string, Product> products, Dictionary<string, ProductCategory> productCategory)
+        {
+            Product tp = new Product();
+            tp.ArticleNumber = "123";
             tp.Name = "T-Shirts";
             tp.Price = 200;
-            products.Add(tp.Name, tp);
+            products.Add(tp.ArticleNumber, tp);
 
             ProductCategory tpc = new ProductCategory("Clothes", "...", "...");
             tpc.Products.Add(tp);
-            productCategory.Add(tpc.Name, tpc);*/
+            productCategory.Add(tpc.Name, tpc);
+        }
 
-            while (true)
+        static void Authenticate(Dictionary<string, string> userLogin)
+        {
+            string username, password;
+
+            bool invalidUser;
+
+            do
+            {
+                Clear();
+                Console.WriteLine("Username:\nPassword:");
+
+                SetCursorPosition(10, 0);
+                username = Console.ReadLine();
+
+                SetCursorPosition(10, 1);
+                password = Console.ReadLine();
+
+                invalidUser = (!userLogin.ContainsKey(username) || userLogin[username] != password);
+
+                if (invalidUser)
+
                 {
-                    WriteLine("1. Add product");
-                    WriteLine("2. Search product");
-                    WriteLine("3. Add category");
-                    WriteLine("4. Add product to category");
-                    WriteLine("5. List categories");
-                    WriteLine("6. Exit");
+                    Write("Invalid credentials, please try again");
+
+                    Thread.Sleep(2000);
+                }
+
+            } while (invalidUser);
+        }
+
+        static void WaitForEscape()
+        {
+            while (Console.ReadKey(true).Key != ConsoleKey.Escape) ;
+        }
+
+        static void DoMainMenu(Dictionary<string, Product> products, Dictionary<string, ProductCategory> productCategory)
+        {
+            while (true)
+            {
+                Clear();
+
+                WriteLine("1. Add product");
+                WriteLine("2. Search product");
+                WriteLine("3. Add category");
+                WriteLine("4. Add product to category");
+                WriteLine("5. List categories");
+                WriteLine("6. Logout");
 
 
-                    ConsoleKeyInfo input;
+                ConsoleKeyInfo input;
 
-                
-                    bool invalidChoice;
 
-                    do
-                    {
-                        input = ReadKey(true);
+                bool invalidChoice;
+
+                do
+                {
+                    input = ReadKey(true);
 
                     invalidChoice = !(input.Key == ConsoleKey.D1 || input.Key == ConsoleKey.NumPad1
                                    || input.Key == ConsoleKey.D2 || input.Key == ConsoleKey.NumPad2
                                    || input.Key == ConsoleKey.D3 || input.Key == ConsoleKey.NumPad3
                                    || input.Key == ConsoleKey.D4 || input.Key == ConsoleKey.NumPad4
                                    || input.Key == ConsoleKey.D5 || input.Key == ConsoleKey.NumPad5
-                                   || input.Key == ConsoleKey.D6 || input.Key == ConsoleKey.NumPad6);                    }
-                    while (invalidChoice);
+                                   || input.Key == ConsoleKey.D6 || input.Key == ConsoleKey.NumPad6);
+                }
+                while (invalidChoice);
 
-                    Clear();
+                Clear();
 
                 switch (input.Key)
                 {
@@ -85,7 +132,7 @@ namespace ProductManager
                             Write("Is this correct Y(es) N(o)");
 
 
-                        } while (ReadKey().Key == ConsoleKey.N);
+                        } while (ReadKey(true).Key == ConsoleKey.N);
 
                         if (products.ContainsKey(p.ArticleNumber))
                         {
@@ -102,45 +149,80 @@ namespace ProductManager
 
                         Thread.Sleep(2000);
 
+                        Clear();
+
                         break;
+
 
                     case ConsoleKey.D2:
                     case ConsoleKey.NumPad2:
-                        
+
                         Write("Article number:");
                         string articleNumber = ReadLine();
-                      
+
 
                         if (products.ContainsKey(articleNumber))
 
                         {
                             Product a = products[articleNumber];
-                            WriteLine($"Articel number:{a.ArticleNumber}");
-                            WriteLine($"Name: {a.Name}");
-                            WriteLine($"Description: {a.Description}");
-                            WriteLine($"Image URL: {a.ImageURL}");
-                            WriteLine($"Price: {a.Price}");
+                            ConsoleKey key;
+                            while (true)
+                            {
+                                Clear();
+                                Print(a);
+                                WriteLine("\n(D)elete");
+                                WriteLine("\nPress Escape (Esc) key to quit: ");
 
-                            Console.WriteLine("Press the Escape (Esc) key to quit: ");
+                                do
+                                {
+                                    key = ReadKey(true).Key;
+                                } while (key != ConsoleKey.Escape && key != ConsoleKey.D);
 
-                            while (Console.ReadKey().Key != ConsoleKey.Escape) ;
+                                if (key == (ConsoleKey.D))
+                                {
+                                    Clear();
+                                    Print(a);
 
-                          
+                                    WriteLine("Are you sure you want to delete? (Y)es (N)o");
+                                    do
+                                    {
+                                        key = ReadKey(true).Key;
+                                    } while (key != ConsoleKey.Y && key != ConsoleKey.N);
+
+                                    if (key == (ConsoleKey.Y))
+                                    {
+                                        products.Remove(articleNumber);
+                                        // foreach
+
+
+                                        WriteLine("Product deleted");
+                                        Thread.Sleep(2000);
+                                    }
+                                    Clear();
+                                }
+                                else
+                                {
+                                    // Escape
+                                    Clear();
+                                    break;
+                                }
+                            }
                         }
-                        else 
+
+                        else
                         {
                             WriteLine("Product not found");
 
                             Thread.Sleep(2000);
                         }
+
                         break;
 
-                        
-                        case ConsoleKey.D3:
-                        case ConsoleKey.NumPad3:
+                    case ConsoleKey.D3:
+                    case ConsoleKey.NumPad3:
 
 
-                        string categoryname, description, imageURL;             
+                        string categoryname, description, imageURL;
 
                         do
                         {
@@ -157,16 +239,16 @@ namespace ProductManager
                             SetCursorPosition(10, 2);
                             imageURL = ReadLine();
 
-                            Write("Is this correct Y(es) N(o)");
+                            Write("\nIs this correct Y(es) N(o)");
 
-                        } while (ReadKey().Key == ConsoleKey.N);
+                        } while (ReadKey(true).Key == ConsoleKey.N);
 
                         ProductCategory category = new ProductCategory(categoryname, description, imageURL);
 
                         if (productCategory.ContainsKey(category.Name))
                         {
-                            return;// visas formuläret på nytt, med tomma fält
-                            
+                            Write("This category already exists");// visas formuläret på nytt, med tomma fält
+
                         }
                         else
                         {
@@ -174,7 +256,6 @@ namespace ProductManager
 
                             WriteLine("Category added");
 
-                            Thread.Sleep(2000);
                         }
                         /*
                          1. Добавьте пункт 3. ADd Category  в основное меню (3-ий Exit станет четврётым)
@@ -185,17 +266,22 @@ namespace ProductManager
                            ...
                         ¨  ProductCatgory category = new ProductCategory(name, url, ... )
                          */
-
+                        Thread.Sleep(2000);
                         break;
 
                     case ConsoleKey.D4:
                     case ConsoleKey.NumPad4:
 
-                        string productArticleNumber = ReadLine();
-                     
-                    if (products.ContainsKey(productArticleNumber))
+                        Clear();
 
-                    {
+                        Write("Article number: ");
+
+                        string productArticleNumber = ReadLine();
+
+
+                        if (products.ContainsKey(productArticleNumber))
+
+                        {
                             Product a = products[productArticleNumber];
 
                             Write("Category name: ");
@@ -205,69 +291,90 @@ namespace ProductManager
                             if (productCategory.ContainsKey(categoryName))
                             {
                                 productCategory[categoryName].AddProduct(a);
-                               
+
                                 WriteLine("Product added to category");
                             }
                             else
                             {
-                                WriteLine("Product not found");
+                                WriteLine("Category not found");
                             }
 
                             Thread.Sleep(2000);
-                            
-                            while (Console.ReadKey().Key != ConsoleKey.Escape) ;
 
-                          
+                            WaitForEscape();
+
+
                         }
-                        else 
+                        else
                         {
                             WriteLine("Product not found");
 
                             Thread.Sleep(2000);
-                        } 
+                        }
                         break;
 
                     case ConsoleKey.D5:
                     case ConsoleKey.NumPad5:
 
                         // TODO: Вывести шапку таблицы (2 строки)
-                       
-                        
+
+
                         WriteLine("Name                         Price");
                         WriteLine("-------------------------------------------------");
 
                         foreach (ProductCategory cat in productCategory.Values)
                         {
-                            WriteLine(cat.Name+" ("+cat.Products.Count+")");
-                           
-                            foreach(Product product in cat.Products)
+                            WriteLine(cat.Name + " (" + cat.Products.Count + ")");
+
+                            foreach (Product product in cat.Products)
                             {
-                                WriteLine("  "+ product.Name + "\t\t" + product.Price);
+                                WriteLine("  " + product.Name + "\t\t" + product.Price);
 
                             }
-                           /* Write( [productCategory.Count] + "\t");*/
-                            
+                            /* Write( [productCategory.Count] + "\t");*/
+
                             // TODO:^Вывести имя категории  (cat.Products.Count)
                             // Сделать вложенный цикл по продуктам и вывести их с отступом
 
-                            
-                        }
 
-                        while (Console.ReadKey().Key != ConsoleKey.Escape) ;
+                        }
+                        WaitForEscape();
 
                         break;
 
-                     case ConsoleKey.D6:
-                     case ConsoleKey.NumPad6:
-                           
+                    case ConsoleKey.D6:
+                    case ConsoleKey.NumPad6:
+
                         return;
 
-                    }
-                
-                  Clear();
-                 
-                  }
+                }
             }
+
         }
+
+        static void Main(string[] args)
+        {
+            Dictionary<string, Product> products = new Dictionary<string, Product>();
+            Dictionary<string, ProductCategory> productCategory = new Dictionary<string, ProductCategory>();
+            PopulateData(products, productCategory);
+
+            Dictionary<string, string> userLogin = new Dictionary<string, string>();
+            userLogin.Add("Tina", "strategi");
+            userLogin.Add("Alex", "skydd");
+
+            while (true)
+            {
+                 Authenticate(userLogin);
+
+                DoMainMenu(products, productCategory);
+            }
+           
+
+                     }
     }
+        
+    
+}
+        
+    
 
