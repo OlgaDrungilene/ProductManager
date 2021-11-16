@@ -12,7 +12,7 @@ namespace ProductManager
 
         public string Description { get; private set; }
 
-        public string ImageURL { get; private set; }
+        public string ImageUrl { get; private set; }
 
         public List<Product> Products;
         public void AddProduct(Product product) { Products.Add(product);}
@@ -22,7 +22,7 @@ namespace ProductManager
         {
             Name = name;
             Description = description;
-            ImageURL = imageURL;
+            ImageUrl = imageURL;
             Products = new List<Product>();
            
         }
