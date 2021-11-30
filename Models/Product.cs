@@ -8,6 +8,7 @@ namespace ProductManager
 { 
     public class Product
     {
+        public int ID { get; set; }
         public string ArticleNumber { get; set; }
 
         public string Name { get; set; }

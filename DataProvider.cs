@@ -14,18 +14,6 @@ namespace ProductManager
         {
             ConnectionString = connectionString;
         }
-
-        public void SaveProduct(string categoryName, Product product)
-        {
-
-        }
-
-        public List<ProductCategory> GetAllCategories()
-        {
-            List<ProductCategory> categories = new List<ProductCategory>();
-            return categories
-        }
-
         public void SaveProduct(Product product)
         {
             string sql = @"
@@ -38,7 +26,7 @@ namespace ProductManager
                 ) VALUES (
                     @ArticleNumber,
                     @Name,
-                    @Description
+                    @Description,
                     @ImageURL,
                     @Price
                 )
@@ -48,6 +36,7 @@ namespace ProductManager
 
             using SqlCommand command = new(sql, connection);
 
+            command.Parameters.AddWithValue("@ID", product.ID);
             command.Parameters.AddWithValue("@ArticleNumber", product.ArticleNumber);
             command.Parameters.AddWithValue("@Name", product.Name);
             command.Parameters.AddWithValue("@Description", product.Description);
@@ -63,26 +52,144 @@ namespace ProductManager
 
         public bool IsArticlePresent(string articleNumber)
         {
-            // TODO:implement SQL operator
+            string sql = @"
+              SELECT COUNT(*) FROM Products
+              WHERE ArticleNumber = @ArticleNumber;
+            ";
+            using SqlConnection connection = new(ConnectionString);
+
+            using SqlCommand command = new(sql, connection);
+            
+            command.Parameters.AddWithValue("@ArticleNumber", articleNumber);
+
+            connection.Open();
+
+            var reader = command.ExecuteReader();
+            reader.Read();
+
+             if (reader.GetInt32(0) == 0)
+             return false;
+            
             return true;
         }
+        public void SaveProduct(string categoryName, Product product)
+        {
+
+        }
+
+        public List<ProductCategory> GetAllCategories()
+        {
+            List<ProductCategory> categories = new List<ProductCategory>();
+
+            //string sql = @"
+            //    SELECT ID,
+            //           Name,
+            //           Description,
+            //           ImageURL
+            //    FROM ProductCategories
+            //";
+            //using SqlConnection connection = new(ConnectionString);
+            //using SqlCommand command = new (sql, connection);
+
+            //connection.Open();
+
+            //var reader = command.ExecuteReader();
+
+            //var productCategoryList = new List<ProductCategory>();
+
+            //while (reader.Read())
+            //{
+            //    var productCategory = new ProductCategory(id: (int) reader ["ID"],
+            //                                              name: (string)reader["Name"],
+            //                                              description: (string)reader["Description"],
+            //                                              imageURL: (string)reader["ImageURL"]);
+                
+            //    productCategoryList.Add(productCategory);                                             
+            //}
+            return categories;
+        }
+
+       
 
         public Product GetProduct(string articleNumber)
         {
-            //TODO:implement SQL operator
+            Product product = new Product();
+            //string sql = @"
+            //    INSERT INTO Products (
+            //        ArticleNumber,
+                   
+            //    ) VALUES (
+            //        @ArticleNumber,
+            //    )
+            //";
+
+            //using SqlConnection connection = new(ConnectionString);
+
+            //using SqlCommand command = new(sql, connection);
+
+            //command.Parameters.AddWithValue("@ArticleNumber", product.ArticleNumber);
+           
+            //connection.Open();
+
+            //command.ExecuteNonQuery();
+
+            //connection.Close();
             return null;
         }
         
          public void RemoveProduct (string articleNumber)
         {
-            //TODO: implement SQL Operator
+            //Product product = new(articleNumber: articleNumber);
+            //string sql = @"
+            //        ON DELETE CASCADE FROM Products (    //??
+            //        ArticleNumber,
+            //    ) VALUES (
+            //        @ArticleNumber,
+            //    )
+            //";
+
+            //using SqlConnection connection = new(ConnectionString);
+
+            //using SqlCommand command = new(sql, connection);
+
+            //command.Parameters.AddWithValue("@ArticleNumber", product.ArticleNumber);
+
+            //connection.Open();
+
+            //command.ExecuteNonQuery();
+
+            //connection.Close();
             return;
 
         }
 
         public void AddCategory (ProductCategory category)
         {
-            //TODO implement Sql
+            string sql = @"
+                INSERT INTO ProductCategories (
+                    Name, 
+                    Description,
+                    ImageURL
+                ) VALUES (
+                    @Name,
+                    @Description
+                    @ImageURL,
+                )
+            ";
+
+            using SqlConnection connection = new(ConnectionString);
+
+            using SqlCommand command = new(sql, connection);
+
+            command.Parameters.AddWithValue("@Name", category.Name);
+            command.Parameters.AddWithValue("@Description", category.Description);
+            command.Parameters.AddWithValue("@ImageURL", category.ImageUrl);
+
+            connection.Open();
+
+            command.ExecuteNonQuery();
+
+            connection.Close();
             return;
         }
     
@@ -92,11 +199,7 @@ namespace ProductManager
             return true;
         }
     
-        public void SaveProduct (string categoryName, a)
-        {
-            //TODO implement SQL
-            return;
-        }
+     
 
 
     }

@@ -181,19 +181,19 @@ namespace ProductManager
                     case ConsoleKey.D3:
                     case ConsoleKey.NumPad3:
 
-                        string categoryname, description, imageURL;
-
+                        string name, description, imageURL;
+                        
                         do
                         {
                             Clear();
 
-                            AddCategory(out id, out categoryname, out description, out imageURL);
+                            AddCategory( out name, out description, out imageURL);
 
                             Write("\nIs this correct Y(es) N(o)");
 
                         } while (ReadKey(true).Key == ConsoleKey.N);
 
-                        ProductCategory category = new ProductCategory(id, categoryname, description, imageURL);
+                        ProductCategory category = new ProductCategory( name, description, imageURL);
 
                         if (dataProvider.IsCategoryPresent(category.Name))
                         {
@@ -308,15 +308,15 @@ namespace ProductManager
             WriteLine($"Image URL: {p.ImageURL}");
             WriteLine($"Price: {p.Price}");
         }
-        private static void AddCategory(out int id, out string categoryname, out string description, out string imageURL)
+        private static void AddCategory( out string categoryname, out string description, out string imageURL)
         {
-            WriteLine("ID:");
+            
             WriteLine("Name:");
             WriteLine("Description:");
             WriteLine("Image URL:");
 
-            SetCursorPosition(4, 0);
-            id = ReadLine();
+            //SetCursorPosition(4, 0);
+            //id = ReadLine();//string?Sql INT.
 
             SetCursorPosition(6, 1);
             categoryname = ReadLine();

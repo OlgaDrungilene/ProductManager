@@ -8,6 +8,7 @@ namespace ProductManager
 {
     public class ProductCategory
     {
+        public int ID { get; set; }
         public string Name { get; private set; }
 
         public string Description { get; private set; }
@@ -18,14 +19,14 @@ namespace ProductManager
         public void AddProduct(Product product) { Products.Add(product);}
           
 
-        public ProductCategory(string name, string description, string imageURL)
+        public ProductCategory( string name, string description, string imageUrl)
         {
             Name = name;
             Description = description;
-            ImageUrl = imageURL;
+            ImageUrl = imageUrl;
             Products = new List<Product>();
            
         }
-       
+
     }
 }
