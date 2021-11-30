@@ -1,13 +1,18 @@
-﻿using System;
+﻿//using ProductManager.Models;
+using System;
+using System.Linq;
 using System.Collections.Generic;
 using static System.Console;
 using System.Threading;
+using System.Data.SqlClient;
 
 namespace ProductManager
 {
     class Program
     {
-            static void Authenticate(Dictionary<string, string> userLogins)
+        static string connectionString = "Server=.;Database=ProductManager;Integrated Security=True";
+        
+        static void Authenticate(Dictionary<string, string> userLogins)
         {
             string username, password;
 
@@ -39,7 +44,7 @@ namespace ProductManager
         {
             while (Console.ReadKey(true).Key != ConsoleKey.Escape) ;
         }
-        static void DoMainMenu(Dictionary<string, Product> products, Dictionary<string, ProductCategory> productCategory)
+        static void DoMainMenu(DataProvider dataProvider)
         {
             while (true)
             {
@@ -87,13 +92,15 @@ namespace ProductManager
 
                         } while (ReadKey(true).Key == ConsoleKey.N);
 
-                        if (products.ContainsKey(p.ArticleNumber))
+                        //if (products.ContainsKey(p.ArticleNumber))
+                        if (dataProvider.IsArticlePresent(p.ArticleNumber))
                         {
                             WriteLine("Product already exists");
                         }
                         else
                         {
-                            products.Add(p.ArticleNumber, p);
+                            dataProvider.SaveProduct(p);
+                            //products.Add(p.ArticleNumber, p);
 
                             WriteLine("Product saved");
                         }
@@ -110,9 +117,10 @@ namespace ProductManager
                         Write("Article number:");
                         string articleNumber = ReadLine();
 
-                        if (products.ContainsKey(articleNumber))
+                        //if (products.ContainsKey(articleNumber))
+                        if (dataProvider.IsArticlePresent(articleNumber))
                         {
-                            Product a = products[articleNumber];
+                            Product a = dataProvider.GetProduct(articleNumber);
                             
                             ConsoleKey key;
                            
@@ -145,7 +153,7 @@ namespace ProductManager
 
                                     if (key == (ConsoleKey.Y))
                                     {
-                                        products.Remove(articleNumber);
+                                        dataProvider.RemoveProduct(articleNumber);
 
                                         WriteLine("Product deleted");
                                        
@@ -179,21 +187,21 @@ namespace ProductManager
                         {
                             Clear();
 
-                            AddCategory(out categoryname, out description, out imageURL);
+                            AddCategory(out id, out categoryname, out description, out imageURL);
 
                             Write("\nIs this correct Y(es) N(o)");
 
                         } while (ReadKey(true).Key == ConsoleKey.N);
 
-                        ProductCategory category = new ProductCategory(categoryname, description, imageURL);
+                        ProductCategory category = new ProductCategory(id, categoryname, description, imageURL);
 
-                        if (productCategory.ContainsKey(category.Name))
+                        if (dataProvider.IsCategoryPresent(category.Name))
                         {
                             Write("This category already exists");
                         }
                         else
                         {
-                            productCategory.Add(category.Name, category);
+                            dataProvider.AddCategory(category);
 
                             WriteLine("Category added");
                         }
@@ -210,18 +218,18 @@ namespace ProductManager
 
                         string productArticleNumber = ReadLine();
 
-                        if (products.ContainsKey(productArticleNumber))
+                        if (dataProvider.IsArticlePresent(productArticleNumber))
 
                         {
-                            Product a = products[productArticleNumber];
+                            Product a = dataProvider.GetProduct(productArticleNumber);
 
                             Write("Category name: ");
 
                             string categoryName = ReadLine();
 
-                            if (productCategory.ContainsKey(categoryName))
+                            if (dataProvider.IsCategoryPresent(categoryName))
                             {
-                                productCategory[categoryName].AddProduct(a);
+                                dataProvider.SaveProduct(categoryName,a);
 
                                 WriteLine("Product added to category");
                             }
@@ -248,7 +256,7 @@ namespace ProductManager
                         WriteLine("Name                         Price");
                         WriteLine("-------------------------------------------------");
 
-                        foreach (ProductCategory cat in productCategory.Values)
+                        foreach (ProductCategory cat in dataProvider.GetAllCategories())
                         {
                             WriteLine(cat.Name + " (" + cat.Products.Count + ")");
 
@@ -277,41 +285,46 @@ namespace ProductManager
         /// </summary>
         /// <param name="products"></param>
         /// <param name="productCategory"></param>
-        static void PopulateData(Dictionary<string, Product> products, Dictionary<string, ProductCategory> productCategory)
-        {
-            Product temporaryProduct = new()
-            {
-                ArticleNumber = "123",
-                Name = "T-Shirts",
-                Price = 200
-            };
-            products.Add(temporaryProduct.ArticleNumber, temporaryProduct);
+        //static void PopulateData(Dictionary<string, Product> products, Dictionary<string, ProductCategory> productCategory)
+        //{
+        //    Product temporaryProduct = new()
+        //    {
+        //        ArticleNumber = "123",
+        //        Name = "T-Shirts",
+        //        Price = 200
+        //    };
+        //    products.Add(temporaryProduct.ArticleNumber, temporaryProduct);
 
-            ProductCategory temporaryProductCategory = new("Clothes", "...", "...");
-            temporaryProductCategory.Products.Add(temporaryProduct);
-            productCategory.Add(temporaryProductCategory.Name, temporaryProductCategory);
-        }
+        //    ProductCategory temporaryProductCategory = new("Clothes", "...", "...");
+        //    temporaryProductCategory.Products.Add(temporaryProduct);
+        //    productCategory.Add(temporaryProductCategory.Name, temporaryProductCategory);
+        //}
         static void Print(Product p)
         {
+            WriteLine($"ID:{p.ID}");
             WriteLine($"Article number:{p.ArticleNumber}");
             WriteLine($"Name: {p.Name}");
             WriteLine($"Description: {p.Description}");
             WriteLine($"Image URL: {p.ImageURL}");
             WriteLine($"Price: {p.Price}");
         }
-        private static void AddCategory(out string categoryname, out string description, out string imageURL)
+        private static void AddCategory(out int id, out string categoryname, out string description, out string imageURL)
         {
+            WriteLine("ID:");
             WriteLine("Name:");
             WriteLine("Description:");
             WriteLine("Image URL:");
 
-            SetCursorPosition(6, 0);
+            SetCursorPosition(4, 0);
+            id = ReadLine();
+
+            SetCursorPosition(6, 1);
             categoryname = ReadLine();
 
-            SetCursorPosition(12, 1);
+            SetCursorPosition(12, 2);
             description = ReadLine();
 
-            SetCursorPosition(10, 2);
+            SetCursorPosition(10, 3);
             imageURL = ReadLine();
         }
 
@@ -338,22 +351,22 @@ namespace ProductManager
             SetCursorPosition(7, 4);
             p.Price = Convert.ToDecimal(ReadLine());
         }
+
+     
         static void Main(string[] args)
         {
-            Dictionary<string, Product> products = new();
-            Dictionary<string, ProductCategory> productCategory = new();
-            PopulateData(products, productCategory);
-            
-
+           
             Dictionary<string, string> userLogin = new();
             userLogin.Add("Tina", "strategi");
             userLogin.Add("Alex", "skydd");
+
+            DataProvider dataProvider = new DataProvider(connectionString);
 
             while (true)
             {
                 Authenticate(userLogin);
 
-                DoMainMenu(products, productCategory);
+                DoMainMenu(dataProvider);
             }
            
 
