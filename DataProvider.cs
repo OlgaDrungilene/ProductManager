@@ -72,98 +72,57 @@ namespace ProductManager
             
             return true;
         }
-        public void SaveProduct(string categoryName, Product product)
-        {
-
-        }
-
-        public List<ProductCategory> GetAllCategories()
-        {
-            List<ProductCategory> categories = new List<ProductCategory>();
-
-            //string sql = @"
-            //    SELECT ID,
-            //           Name,
-            //           Description,
-            //           ImageURL
-            //    FROM ProductCategories
-            //";
-            //using SqlConnection connection = new(ConnectionString);
-            //using SqlCommand command = new (sql, connection);
-
-            //connection.Open();
-
-            //var reader = command.ExecuteReader();
-
-            //var productCategoryList = new List<ProductCategory>();
-
-            //while (reader.Read())
-            //{
-            //    var productCategory = new ProductCategory(id: (int) reader ["ID"],
-            //                                              name: (string)reader["Name"],
-            //                                              description: (string)reader["Description"],
-            //                                              imageURL: (string)reader["ImageURL"]);
-                
-            //    productCategoryList.Add(productCategory);                                             
-            //}
-            return categories;
-        }
-
-       
 
         public Product GetProduct(string articleNumber)
         {
             Product product = new Product();
-            //string sql = @"
-            //    INSERT INTO Products (
-            //        ArticleNumber,
+            string sql = @"
+                INSERT INTO Products (
+                    ArticleNumber,
                    
-            //    ) VALUES (
-            //        @ArticleNumber,
-            //    )
-            //";
+                ) VALUES (
+                    @ArticleNumber,
+                )
+            ";
 
-            //using SqlConnection connection = new(ConnectionString);
+            using SqlConnection connection = new(ConnectionString);
 
-            //using SqlCommand command = new(sql, connection);
+            using SqlCommand command = new(sql, connection);
 
-            //command.Parameters.AddWithValue("@ArticleNumber", product.ArticleNumber);
-           
-            //connection.Open();
+            command.Parameters.AddWithValue("@ArticleNumber", product.ArticleNumber);
 
-            //command.ExecuteNonQuery();
+            connection.Open();
 
-            //connection.Close();
+            command.ExecuteNonQuery();
+
+            connection.Close();
             return null;
         }
-        
-         public void RemoveProduct (string articleNumber)
+
+        public void RemoveProduct(string articleNumber)
         {
-            //Product product = new(articleNumber: articleNumber);
-            //string sql = @"
-            //        ON DELETE CASCADE FROM Products (    //??
-            //        ArticleNumber,
-            //    ) VALUES (
-            //        @ArticleNumber,
-            //    )
-            //";
+            
+            string sql = @"
+                    DELETE FROM Products 
+                    WHERE ArticleNumber = @articleNumber
+            ";
 
-            //using SqlConnection connection = new(ConnectionString);
+            using SqlConnection connection = new(ConnectionString);
 
-            //using SqlCommand command = new(sql, connection);
+            using SqlCommand command = new(sql, connection);
 
-            //command.Parameters.AddWithValue("@ArticleNumber", product.ArticleNumber);
+            command.Parameters.AddWithValue("@articleNumber", articleNumber);
 
-            //connection.Open();
+            connection.Open();
 
-            //command.ExecuteNonQuery();
+            command.ExecuteNonQuery();
 
-            //connection.Close();
+            connection.Close();
             return;
 
         }
 
-        public void AddCategory (ProductCategory category)
+        public void AddCategory(ProductCategory category)
         {
             string sql = @"
                 INSERT INTO ProductCategories (
@@ -192,12 +151,88 @@ namespace ProductManager
             connection.Close();
             return;
         }
-    
+
         public bool IsCategoryPresent(string category)
         {
             //TODO implement Sql
+            string sql = @"
+              SELECT COUNT(*) FROM Products
+              WHERE ArticleNumber = @ArticleNumber;
+            ";
+            using SqlConnection connection = new(ConnectionString);
+
+            using SqlCommand command = new(sql, connection);
+
+            command.Parameters.AddWithValue("@ArticleNumber", category);
+
+            connection.Open();
+
+            var reader = command.ExecuteReader();
+            reader.Read();
+
+            if (reader.GetInt32(0) == 0)
+                return false;
+
             return true;
+
         }
+        public void SaveProduct(string categoryName, Product product)
+        {
+
+        }
+/*
+        public bool IsArticlePresent(string articleNumber)
+        {
+            string sql = @"
+              SELECT COUNT(*) FROM Products
+              WHERE ArticleNumber = @ArticleNumber;
+            ";
+            using SqlConnection connection = new(ConnectionString);
+
+            using SqlCommand command = new(sql, connection);
+
+            command.Parameters.AddWithValue("@ArticleNumber", articleNumber);
+
+            connection.Open();
+
+            var reader = command.ExecuteReader();
+            reader.Read();
+
+            if (reader.GetInt32(0) == 0)
+                return false;
+
+            return true;
+        }*/
+        public List<ProductCategory> GetAllCategories()
+        {
+            List<ProductCategory> categories = new List<ProductCategory>();
+
+            //string sql = @"
+            //    SELECT ID,
+            //           Name,
+            //           Description,
+            //           ImageURL
+            //    FROM ProductCategories
+            //";
+            //using SqlConnection connection = new(ConnectionString);
+            //using SqlCommand command = new (sql, connection);
+
+            //connection.Open();
+
+            //var reader = command.ExecuteReader();
+
+                        //while (reader.Read())
+            //{
+            //    var productCategory = new ProductCategory(id: (int) reader ["ID"],
+            //                                              name: (string)reader["Name"],
+            //                                              description: (string)reader["Description"],
+            //                                              imageURL: (string)reader["ImageURL"]);
+                
+            //    productCategoryList.Add(productCategory);                                             
+            //}
+            return categories;
+        }
+
     
      
 
