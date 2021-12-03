@@ -75,28 +75,41 @@ namespace ProductManager
 
         public Product GetProduct(string articleNumber)
         {
-            Product product = new Product();
+           
             string sql = @"
-                INSERT INTO Products (
-                    ArticleNumber,
-                   
-                ) VALUES (
-                    @ArticleNumber,
-                )
+                SELECT ID,
+                       ArticleNumber,
+                       Name,
+                       ImageUrl,
+                       Description,
+                       Price,
+                       IDCategory
+                FROM Products
+                WHERE ArticleNumber=@ArticleNumber;
             ";
 
             using SqlConnection connection = new(ConnectionString);
 
             using SqlCommand command = new(sql, connection);
 
-            command.Parameters.AddWithValue("@ArticleNumber", product.ArticleNumber);
+            command.Parameters.AddWithValue("@ArticleNumber", articleNumber);
 
             connection.Open();
-
-            command.ExecuteNonQuery();
-
-            connection.Close();
+            var reader = command.ExecuteReader();
+           
+            if  (reader.Read()==false)
+            
             return null;
+
+            Product product = new Product();
+            product.ID = reader.GetInt32(0);
+            product.ArticleNumber = reader.GetString(1);
+            product.Name = reader.GetString(2);
+            product.ImageURL = reader.GetString(3);
+            product.Description = reader.GetString(4);
+            product.Price = reader.GetDecimal(5);
+            
+            return product;
         }
 
         public void RemoveProduct(string articleNumber)
@@ -131,8 +144,8 @@ namespace ProductManager
                     ImageURL
                 ) VALUES (
                     @Name,
-                    @Description
-                    @ImageURL,
+                    @Description,
+                    @ImageURL
                 )
             ";
 
@@ -152,18 +165,18 @@ namespace ProductManager
             return;
         }
 
-        public bool IsCategoryPresent(string category)
+        public bool IsCategoryPresent(string name)
         {
             //TODO implement Sql
             string sql = @"
-              SELECT COUNT(*) FROM Products
-              WHERE ArticleNumber = @ArticleNumber;
+              SELECT COUNT(*) FROM ProductCategories
+              WHERE Name = @Category;
             ";
             using SqlConnection connection = new(ConnectionString);
 
             using SqlCommand command = new(sql, connection);
 
-            command.Parameters.AddWithValue("@ArticleNumber", category);
+            command.Parameters.AddWithValue("@Category", name);
 
             connection.Open();
 
@@ -178,31 +191,27 @@ namespace ProductManager
         }
         public void SaveProduct(string categoryName, Product product)
         {
+            /* string sql = @"
+                  UPDATE Products SET IDCategory = 
+     (SELECT ID FROM ProductCategories WHERE Name = @categoryName)
+     WHERE ID = @productId
+             ";
+
+             using SqlConnection connection = new(ConnectionString);
+
+             using SqlCommand command = new(sql, connection);
+
+             command.Parameters.AddWithValue("@categoryName", categoryName);
+            command.Parameters.AddWithValue("@productId", product.ID);
+
+             connection.Open();
+
+             command.ExecuteNonQuery();
+
+             connection.Close();*/
 
         }
-/*
-        public bool IsArticlePresent(string articleNumber)
-        {
-            string sql = @"
-              SELECT COUNT(*) FROM Products
-              WHERE ArticleNumber = @ArticleNumber;
-            ";
-            using SqlConnection connection = new(ConnectionString);
 
-            using SqlCommand command = new(sql, connection);
-
-            command.Parameters.AddWithValue("@ArticleNumber", articleNumber);
-
-            connection.Open();
-
-            var reader = command.ExecuteReader();
-            reader.Read();
-
-            if (reader.GetInt32(0) == 0)
-                return false;
-
-            return true;
-        }*/
         public List<ProductCategory> GetAllCategories()
         {
             List<ProductCategory> categories = new List<ProductCategory>();
