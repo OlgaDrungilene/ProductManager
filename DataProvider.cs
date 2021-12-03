@@ -75,8 +75,7 @@ namespace ProductManager
 
         public Product GetProduct(string articleNumber)
         {
-            Product product = new Product();
-            string sql = @"
+             string sql = @"
                 SELECT ArticleNumber,
                        Name,
                        Description,
@@ -103,7 +102,6 @@ namespace ProductManager
 
         public void RemoveProduct(string articleNumber)
         {
-            
             string sql = @"
                     DELETE FROM Products 
                     WHERE ArticleNumber = @articleNumber
@@ -126,7 +124,7 @@ namespace ProductManager
 
         public void AddCategory(ProductCategory category)
         {
-            string sql = @"
+           /* string sql = @"
                 INSERT INTO ProductCategories (
                     Name, 
                     Description,
@@ -151,21 +149,21 @@ namespace ProductManager
             command.ExecuteNonQuery();
 
             connection.Close();
-            return;
+            return;*/
         }
 
         public bool IsCategoryPresent(string category)
-        {
+        {/*
             //TODO implement Sql
             string sql = @"
-              SELECT COUNT(*) FROM Products
-              WHERE ArticleNumber = @ArticleNumber;
+              SELECT COUNT(*) FROM ProductCategories
+              WHERE Name = @name;
             ";
             using SqlConnection connection = new(ConnectionString);
 
             using SqlCommand command = new(sql, connection);
 
-            command.Parameters.AddWithValue("@ArticleNumber", category);
+            command.Parameters.AddWithValue("@Category", category);
 
             connection.Open();
 
@@ -175,10 +173,10 @@ namespace ProductManager
             if (reader.GetInt32(0) == 0)
             return false;
 
-            return true;
+            return true;*/
         }
         public void SaveProduct(string categoryName, Product product)
-        {
+        {/*
             string sql = @"
                 INSERT INTO Products (
                     ArticleNumber,
@@ -210,34 +208,12 @@ namespace ProductManager
 
             command.ExecuteNonQuery();
 
-            connection.Close();
+            connection.Close();*/
         }
-/*
-        public bool IsArticlePresent(string articleNumber)
-        {
-            string sql = @"
-              SELECT COUNT(*) FROM Products
-              WHERE ArticleNumber = @ArticleNumber;
-            ";
-            using SqlConnection connection = new(ConnectionString);
 
-            using SqlCommand command = new(sql, connection);
-
-            command.Parameters.AddWithValue("@ArticleNumber", articleNumber);
-
-            connection.Open();
-
-            var reader = command.ExecuteReader();
-            reader.Read();
-
-            if (reader.GetInt32(0) == 0)
-                return false;
-
-            return true;
-        }*/
         public List<ProductCategory> GetAllCategories()
         {
-            List<ProductCategory> categories = new List<ProductCategory>();
+           /* List<ProductCategory> categories = new List<ProductCategory>();
 
             //string sql = @"
             //    SELECT ID,
@@ -262,12 +238,8 @@ namespace ProductManager
                 
             //    productCategoryList.Add(productCategory);                                             
             //}
-            return categories;
+            return categories;*/
         }
-
-    
-     
-
 
     }
 }
