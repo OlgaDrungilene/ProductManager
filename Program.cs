@@ -126,6 +126,7 @@ namespace ProductManager
                            
                             while (true)
                             {
+
                                 Clear();
 
                                 Print(a);

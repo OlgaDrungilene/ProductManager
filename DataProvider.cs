@@ -69,7 +69,7 @@ namespace ProductManager
 
              if (reader.GetInt32(0) == 0)
              return false;
-            
+
             return true;
         }
 
@@ -77,11 +77,13 @@ namespace ProductManager
         {
             Product product = new Product();
             string sql = @"
-                INSERT INTO Products (
-                    ArticleNumber,
-                   
-                ) VALUES (
-                    @ArticleNumber,
+                SELECT ArticleNumber,
+                       Name,
+                       Description,
+                       ImageUrl,
+                       Price
+                  FROM Product
+                 WHERE ArticleNumber = @ArticleNumber
                 )
             ";
 
@@ -89,7 +91,7 @@ namespace ProductManager
 
             using SqlCommand command = new(sql, connection);
 
-            command.Parameters.AddWithValue("@ArticleNumber", product.ArticleNumber);
+            command.Parameters.AddWithValue("@ArticleNumber", articleNumber);
 
             connection.Open();
 
@@ -171,14 +173,44 @@ namespace ProductManager
             reader.Read();
 
             if (reader.GetInt32(0) == 0)
-                return false;
+            return false;
 
             return true;
-
         }
         public void SaveProduct(string categoryName, Product product)
         {
+            string sql = @"
+                INSERT INTO Products (
+                    ArticleNumber,
+                    Name, 
+                    Description,
+                    ImageURL,
+                    Price
+                ) VALUES (
+                    @ArticleNumber,
+                    @Name,
+                    @Description,
+                    @ImageURL,
+                    @Price
+                )
+            ";
 
+            using SqlConnection connection = new(ConnectionString);
+
+            using SqlCommand command = new(sql, connection);
+
+            command.Parameters.AddWithValue("@ID", product.ID);
+            command.Parameters.AddWithValue("@ArticleNumber", product.ArticleNumber);
+            command.Parameters.AddWithValue("@Name", product.Name);
+            command.Parameters.AddWithValue("@Description", product.Description);
+            command.Parameters.AddWithValue("@ImageURL", product.ImageURL);
+            command.Parameters.AddWithValue("@Price", product.Price);
+
+            connection.Open();
+
+            command.ExecuteNonQuery();
+
+            connection.Close();
         }
 /*
         public bool IsArticlePresent(string articleNumber)
