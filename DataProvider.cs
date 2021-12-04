@@ -185,7 +185,7 @@ namespace ProductManager
         }
         public void SaveProduct(string categoryName, Product product)
         {
-            /* string sql = @"
+            string sql = @"
                   UPDATE Products SET IDCategory = 
      (SELECT ID FROM ProductCategories WHERE Name = @categoryName)
      WHERE ID = @productId
@@ -202,7 +202,7 @@ namespace ProductManager
 
              command.ExecuteNonQuery();
 
-             connection.Close();*/
+             connection.Close();
 
         }
 
