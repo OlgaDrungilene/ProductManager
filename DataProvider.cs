@@ -129,7 +129,6 @@ namespace ProductManager
             return;
 
         }
-
         public void AddCategory(ProductCategory category)
         {
            /* string sql = @"
