@@ -321,13 +321,13 @@ namespace ProductManager
             //SetCursorPosition(4, 0);
             //id = ReadLine();//string?Sql INT.
 
-            SetCursorPosition(6, 1);
+            SetCursorPosition(6, 0);
             categoryname = ReadLine();
 
-            SetCursorPosition(12, 2);
+            SetCursorPosition(12, 1);
             description = ReadLine();
 
-            SetCursorPosition(10, 3);
+            SetCursorPosition(10, 2);
             imageURL = ReadLine();
         }
 

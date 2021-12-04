@@ -75,7 +75,6 @@ namespace ProductManager
 
         public Product GetProduct(string articleNumber)
         {
-            Product product = new Product();
             string sql = @"
                 INSERT INTO Products (
                     ArticleNumber,
@@ -182,7 +181,7 @@ namespace ProductManager
             if (reader.GetInt32(0) == 0)
             return false;
 
-            return true;*/
+            return true;
         }
         public void SaveProduct(string categoryName, Product product)
         {
