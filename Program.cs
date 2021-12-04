@@ -159,6 +159,8 @@ namespace ProductManager
                                         WriteLine("Product deleted");
                                        
                                         Thread.Sleep(2000);
+
+                                        break;
                                     }
                                     Clear();
                                 }

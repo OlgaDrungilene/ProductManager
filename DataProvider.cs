@@ -75,14 +75,13 @@ namespace ProductManager
 
         public Product GetProduct(string articleNumber)
         {
-             string sql = @"
-                SELECT ArticleNumber,
-                       Name,
-                       Description,
-                       ImageUrl,
-                       Price
-                  FROM Product
-                 WHERE ArticleNumber = @ArticleNumber
+            Product product = new Product();
+            string sql = @"
+                INSERT INTO Products (
+                    ArticleNumber,
+                   
+                ) VALUES (
+                    @ArticleNumber,
                 )
             ";
 
@@ -93,11 +92,21 @@ namespace ProductManager
             command.Parameters.AddWithValue("@ArticleNumber", articleNumber);
 
             connection.Open();
-
-            command.ExecuteNonQuery();
-
-            connection.Close();
+            var reader = command.ExecuteReader();
+           
+            if  (reader.Read()==false)
+            
             return null;
+
+            Product product = new Product();
+            product.ID = reader.GetInt32(0);
+            product.ArticleNumber = reader.GetString(1);
+            product.Name = reader.GetString(2);
+            product.ImageURL = reader.GetString(3);
+            product.Description = reader.GetString(4);
+            product.Price = reader.GetDecimal(5);
+            
+            return product;
         }
 
         public void RemoveProduct(string articleNumber)
@@ -131,8 +140,8 @@ namespace ProductManager
                     ImageURL
                 ) VALUES (
                     @Name,
-                    @Description
-                    @ImageURL,
+                    @Description,
+                    @ImageURL
                 )
             ";
 
@@ -152,18 +161,18 @@ namespace ProductManager
             return;*/
         }
 
-        public bool IsCategoryPresent(string category)
-        {/*
+        public bool IsCategoryPresent(string name)
+        {
             //TODO implement Sql
             string sql = @"
               SELECT COUNT(*) FROM ProductCategories
-              WHERE Name = @name;
+              WHERE Name = @Category;
             ";
             using SqlConnection connection = new(ConnectionString);
 
             using SqlCommand command = new(sql, connection);
 
-            command.Parameters.AddWithValue("@Category", category);
+            command.Parameters.AddWithValue("@Category", name);
 
             connection.Open();
 
@@ -176,39 +185,26 @@ namespace ProductManager
             return true;*/
         }
         public void SaveProduct(string categoryName, Product product)
-        {/*
-            string sql = @"
-                INSERT INTO Products (
-                    ArticleNumber,
-                    Name, 
-                    Description,
-                    ImageURL,
-                    Price
-                ) VALUES (
-                    @ArticleNumber,
-                    @Name,
-                    @Description,
-                    @ImageURL,
-                    @Price
-                )
-            ";
+        {
+            /* string sql = @"
+                  UPDATE Products SET IDCategory = 
+     (SELECT ID FROM ProductCategories WHERE Name = @categoryName)
+     WHERE ID = @productId
+             ";
 
-            using SqlConnection connection = new(ConnectionString);
+             using SqlConnection connection = new(ConnectionString);
 
-            using SqlCommand command = new(sql, connection);
+             using SqlCommand command = new(sql, connection);
 
-            command.Parameters.AddWithValue("@ID", product.ID);
-            command.Parameters.AddWithValue("@ArticleNumber", product.ArticleNumber);
-            command.Parameters.AddWithValue("@Name", product.Name);
-            command.Parameters.AddWithValue("@Description", product.Description);
-            command.Parameters.AddWithValue("@ImageURL", product.ImageURL);
-            command.Parameters.AddWithValue("@Price", product.Price);
+             command.Parameters.AddWithValue("@categoryName", categoryName);
+            command.Parameters.AddWithValue("@productId", product.ID);
 
-            connection.Open();
+             connection.Open();
 
-            command.ExecuteNonQuery();
+             command.ExecuteNonQuery();
 
-            connection.Close();*/
+             connection.Close();*/
+
         }
 
         public List<ProductCategory> GetAllCategories()
