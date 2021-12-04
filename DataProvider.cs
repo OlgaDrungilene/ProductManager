@@ -187,8 +187,9 @@ namespace ProductManager
         {
             string sql = @"
                   UPDATE Products SET IDCategory = 
-     (SELECT ID FROM ProductCategories WHERE Name = @categoryName)
-     WHERE ID = @productId
+                 (SELECT ID FROM ProductCategories
+                  WHERE Name = @categoryName)
+                  WHERE ID = @productId
              ";
 
              using SqlConnection connection = new(ConnectionString);
@@ -208,32 +209,34 @@ namespace ProductManager
 
         public List<ProductCategory> GetAllCategories()
         {
-           /* List<ProductCategory> categories = new List<ProductCategory>();
 
-            //string sql = @"
-            //    SELECT ID,
-            //           Name,
-            //           Description,
-            //           ImageURL
-            //    FROM ProductCategories
-            //";
-            //using SqlConnection connection = new(ConnectionString);
-            //using SqlCommand command = new (sql, connection);
+            string sql = @"
+                SELECT ID,
+                       Name,
+                       Description,
+                       ImageUrl
+                FROM ProductCategories
+            ";
+            using SqlConnection connection = new(ConnectionString);
+          
+            using SqlCommand command = new(sql, connection);
 
-            //connection.Open();
+            connection.Open();
 
-            //var reader = command.ExecuteReader();
+            var reader = command.ExecuteReader();
 
-                        //while (reader.Read())
-            //{
-            //    var productCategory = new ProductCategory(id: (int) reader ["ID"],
-            //                                              name: (string)reader["Name"],
-            //                                              description: (string)reader["Description"],
-            //                                              imageURL: (string)reader["ImageURL"]);
-                
-            //    productCategoryList.Add(productCategory);                                             
-            //}
-            return categories;*/
+            List<ProductCategory> productCategoryList = new ();
+
+            while (reader.Read())
+            {
+                var name = (string)reader["Name"];
+                var description = (string)reader["Description"];
+                var imageUrl = (string)reader["ImageUrl"];
+
+                ProductCategory productCategory = new(name, description, imageUrl);
+                productCategoryList.Add(productCategory);
+            }
+            return productCategoryList;
         }
 
     }
