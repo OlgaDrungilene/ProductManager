@@ -131,7 +131,7 @@ namespace ProductManager
         }
         public void AddCategory(ProductCategory category)
         {
-           /* string sql = @"
+            string sql = @"
                 INSERT INTO ProductCategories (
                     Name, 
                     Description,
@@ -156,7 +156,7 @@ namespace ProductManager
             command.ExecuteNonQuery();
 
             connection.Close();
-            return;*/
+            return;
         }
 
         public bool IsCategoryPresent(string name)
