@@ -23,6 +23,15 @@ CONSTRAINT AN_ArticleNumber UNIQUE(ArticleNumber),
 PRIMARY KEY (ID),
  )
 
+ CREATE TABLE Users (
+ Id INT IDENTITY,
+ Name NVARCHAR(13),
+ Password NVARCHAR(25),
+ PRIMARY KEY (ID)
+ )
+
+
+
 
 
 

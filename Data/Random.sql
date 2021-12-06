@@ -18,3 +18,8 @@ VALUES
 ('N13754' , 'Jeans', 'boot-cut', 'http://placeholder2e3.com', 1200, 1),
 ('B34245', 'Baseball','Blue colour, 100% cotton', 'http://placeholder132.com', 700, 3),
 ('G34534', 'Suit', 'black clour', 'http://placeholder22.com', 2000, 2)
+
+INSERT INTO Users (Name, Password)
+VALUES 
+('Tina', 'strategi'),
+('Alex', 'skydd')
