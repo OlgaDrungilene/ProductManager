@@ -55,7 +55,8 @@ namespace ProductManager
                 WriteLine("3. Add category");
                 WriteLine("4. Add product to category");
                 WriteLine("5. List categories");
-                WriteLine("6. Logout");
+                WriteLine("6. Add category to category");
+                WriteLine("7. Logout");
 
                 ConsoleKeyInfo input;
 
@@ -70,7 +71,8 @@ namespace ProductManager
                                    || input.Key == ConsoleKey.D3 || input.Key == ConsoleKey.NumPad3
                                    || input.Key == ConsoleKey.D4 || input.Key == ConsoleKey.NumPad4
                                    || input.Key == ConsoleKey.D5 || input.Key == ConsoleKey.NumPad5
-                                   || input.Key == ConsoleKey.D6 || input.Key == ConsoleKey.NumPad6);
+                                   || input.Key == ConsoleKey.D6 || input.Key == ConsoleKey.NumPad6
+                                   || input.Key == ConsoleKey.D7 || input.Key == ConsoleKey.NumPad7);
                 }
                 while (invalidChoice);
 
@@ -275,6 +277,20 @@ namespace ProductManager
 
                     case ConsoleKey.D6:
                     case ConsoleKey.NumPad6:
+
+                        Clear();
+
+                       // TODO
+                       // string parentCategory = ReadLine();
+                       // string childCategory = ReadLine();
+
+                        WriteLine ("Parent category: ");
+                        WriteLine ("Child category: ");
+
+                        break;
+
+                    case ConsoleKey.D7:
+                    case ConsoleKey.NumPad7:
 
                         return;
 
