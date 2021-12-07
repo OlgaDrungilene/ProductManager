@@ -16,8 +16,7 @@ namespace ProductManager
         public string ImageUrl { get; private set; }
 
         public List<Product> Products;
-        public void AddProduct(Product product) { Products.Add(product);}
-          
+       
 
         public ProductCategory( string name, string description, string imageUrl)
         {
