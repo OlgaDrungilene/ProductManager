@@ -101,13 +101,15 @@ namespace ProductManager
 
         public Product GetProduct(string articleNumber)
         {
-            string sql = @"
-                INSERT INTO Products (
-                    ArticleNumber,
-                   
-                ) VALUES (
-                    @ArticleNumber,
-                )
+             string sql = @"
+                SELECT ArticleNumber,
+                       Name,
+                       Description,
+                       ImageUrl,
+                       Price
+                  FROM Products
+                 WHERE ArticleNumber = @ArticleNumber
+                
             ";
 
             using SqlConnection connection = new(ConnectionString);
@@ -245,8 +247,17 @@ namespace ProductManager
             using SqlConnection connection = new(ConnectionString);
           
             using SqlCommand command = new(sql, connection);
+            /* List<ProductCategory> categories = new List<ProductCategory>();
 
-            connection.Open();
+             //string sql = @"
+             //    SELECT ID,
+             //           Name,
+             //           Description,
+             //           ImageURL
+             //    FROM ProductCategories
+             //";
+             //using SqlConnection connection = new(ConnectionString);
+             //using SqlCommand command = new (sql, connection);
 
             var reader = command.ExecuteReader();
 
