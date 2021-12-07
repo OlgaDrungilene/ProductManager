@@ -30,8 +30,9 @@ namespace ProductManager
                 SetCursorPosition(10, 1);
                 string password = Console.ReadLine();
 
+                invalidUser = !dataProvider.IsUserPresent(userName, password);
                
-                if (dataProvider.IsUserPresent(userName, password ))
+                if (invalidUser)
                 {
                     Write("Invalid credentials, please try again");
 
