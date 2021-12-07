@@ -81,9 +81,9 @@ namespace ProductManager
                        Description,
                        ImageUrl,
                        Price
-                  FROM Product
+                  FROM Products
                  WHERE ArticleNumber = @ArticleNumber
-                )
+                
             ";
 
             using SqlConnection connection = new(ConnectionString);
@@ -174,6 +174,7 @@ namespace ProductManager
             return false;
 
             return true;*/
+            throw   new NotImplementedException();
         }
         public void SaveProduct(string categoryName, Product product)
         {/*
@@ -213,32 +214,33 @@ namespace ProductManager
 
         public List<ProductCategory> GetAllCategories()
         {
-           /* List<ProductCategory> categories = new List<ProductCategory>();
+            /* List<ProductCategory> categories = new List<ProductCategory>();
 
-            //string sql = @"
-            //    SELECT ID,
-            //           Name,
-            //           Description,
-            //           ImageURL
-            //    FROM ProductCategories
-            //";
-            //using SqlConnection connection = new(ConnectionString);
-            //using SqlCommand command = new (sql, connection);
+             //string sql = @"
+             //    SELECT ID,
+             //           Name,
+             //           Description,
+             //           ImageURL
+             //    FROM ProductCategories
+             //";
+             //using SqlConnection connection = new(ConnectionString);
+             //using SqlCommand command = new (sql, connection);
 
-            //connection.Open();
+             //connection.Open();
 
-            //var reader = command.ExecuteReader();
+             //var reader = command.ExecuteReader();
 
-                        //while (reader.Read())
-            //{
-            //    var productCategory = new ProductCategory(id: (int) reader ["ID"],
-            //                                              name: (string)reader["Name"],
-            //                                              description: (string)reader["Description"],
-            //                                              imageURL: (string)reader["ImageURL"]);
-                
-            //    productCategoryList.Add(productCategory);                                             
-            //}
-            return categories;*/
+                         //while (reader.Read())
+             //{
+             //    var productCategory = new ProductCategory(id: (int) reader ["ID"],
+             //                                              name: (string)reader["Name"],
+             //                                              description: (string)reader["Description"],
+             //                                              imageURL: (string)reader["ImageURL"]);
+
+             //    productCategoryList.Add(productCategory);                                             
+             //}
+             return categories;*/
+            throw new NotImplementedException();
         }
 
     }
