@@ -207,6 +207,39 @@ namespace ProductManager
 
         }
 
+        public void PopulateCategoryProducts(ProductCategory category)
+        {
+            string sql = @"
+                SELECT ID,
+                       ArticleNumber,
+                       Name,
+                       Description,
+                       ImageURL,
+                       Price,
+                       IDCategory
+                  FROM Products
+                 WHERE IDCategory = @idCategory";
+            using SqlConnection connection = new(ConnectionString);
+            using SqlCommand command = new(sql, connection);
+            command.Parameters.AddWithValue("@idCategory", category.ID);
+
+            connection.Open();
+
+            var reader = command.ExecuteReader();
+           
+            while (reader.Read())
+            {
+                Product p = new Product();
+                p.ID = reader.GetInt32(0);
+                p.Name = reader.GetString(2);
+                p.Price = reader.GetDecimal(5);
+                
+                category.Products.Add(p);
+               
+            }
+            return;
+        }
+
         public List<ProductCategory> GetAllCategories()
         {
 
@@ -229,11 +262,12 @@ namespace ProductManager
 
             while (reader.Read())
             {
+                var id = (int)reader["ID"];
                 var name = (string)reader["Name"];
                 var description = (string)reader["Description"];
                 var imageUrl = (string)reader["ImageUrl"];
 
-                ProductCategory productCategory = new(name, description, imageUrl);
+                ProductCategory productCategory = new(name, description, imageUrl) { ID = id };
                 productCategoryList.Add(productCategory);
             }
             return productCategoryList;

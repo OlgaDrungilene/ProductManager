@@ -261,6 +261,7 @@ namespace ProductManager
 
                         foreach (ProductCategory cat in dataProvider.GetAllCategories())
                         {
+                            dataProvider.PopulateCategoryProducts(cat);
                             WriteLine(cat.Name + " (" + cat.Products.Count + ")");
 
                             foreach (Product product in cat.Products)
