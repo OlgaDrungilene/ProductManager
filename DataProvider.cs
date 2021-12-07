@@ -14,6 +14,32 @@ namespace ProductManager
         {
             ConnectionString = connectionString;
         }
+
+        public bool IsUserPresent(string userName, string password)
+        {
+            string sql = @"
+              SELECT COUNT(*) FROM Users
+              WHERE UserName = @Name;
+              WHERE Password = @Password;
+            ";
+            using SqlConnection connection = new(ConnectionString);
+
+            using SqlCommand command = new(sql, connection);
+
+            command.Parameters.AddWithValue("@Name", userName);
+            command.Parameters.AddWithValue("@Password", password);
+
+            connection.Open();
+
+            var reader = command.ExecuteReader();
+            reader.Read();
+
+            if (reader.GetInt32(0) == 0)
+                return false;
+
+            return true;
+        }
+
         public void SaveProduct(Product product)
         {
             string sql = @"

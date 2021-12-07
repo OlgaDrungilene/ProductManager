@@ -12,11 +12,12 @@ namespace ProductManager
     {
         static string connectionString = "Server=.;Database=ProductManager;Integrated Security=True";
         
-        static void Authenticate(Dictionary<string, string> userLogins)
+        static void Authenticate(string userName, string password, DataProvider dataProvider)
         {
-            string username, password;
-
+           
             bool invalidUser;
+
+            invalidUser = false;
 
             do
             {
@@ -24,14 +25,13 @@ namespace ProductManager
                 Console.WriteLine("Username:\nPassword:");
 
                 SetCursorPosition(10, 0);
-                username = Console.ReadLine();
+                userName = Console.ReadLine();
 
                 SetCursorPosition(10, 1);
                 password = Console.ReadLine();
 
-                invalidUser = (!userLogins.ContainsKey(username) || userLogins[username] != password);
-
-                if (invalidUser)
+               
+                if (dataProvider.IsUserPresent(userName, password ))
                 {
                     Write("Invalid credentials, please try again");
 
@@ -372,24 +372,24 @@ namespace ProductManager
         }
 
      
-        static void Main(string[] args)
-        {
+        //static void Main(string[] args)
+        //{
            
-            Dictionary<string, string> userLogin = new();
-            userLogin.Add("Tina", "strategi");
-            userLogin.Add("Alex", "skydd");
+        //    Dictionary<string, string> userLogin = new();
+        //    userLogin.Add("Tina", "strategi");
+        //    userLogin.Add("Alex", "skydd");
 
-            DataProvider dataProvider = new DataProvider(connectionString);
+        //    DataProvider dataProvider = new DataProvider(connectionString);
 
-            while (true)
-            {
-                Authenticate(userLogin);
+        //    while (true)
+        //    {
+        //        Authenticate(userLogin);
 
-                DoMainMenu(dataProvider);
-            }
+        //        DoMainMenu(dataProvider);
+        //    }
            
 
-        }
+        //}
     }
         
     
