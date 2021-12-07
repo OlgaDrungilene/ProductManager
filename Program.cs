@@ -371,25 +371,25 @@ namespace ProductManager
             p.Price = Convert.ToDecimal(ReadLine());
         }
 
-     
-        //static void Main(string[] args)
-        //{
-           
-        //    Dictionary<string, string> userLogin = new();
-        //    userLogin.Add("Tina", "strategi");
-        //    userLogin.Add("Alex", "skydd");
 
-        //    DataProvider dataProvider = new DataProvider(connectionString);
+        static void Main(string[] args)
+        {
 
-        //    while (true)
-        //    {
-        //        Authenticate(userLogin);
+            Dictionary<string, string> userLogin = new();
+            userLogin.Add("Tina", "strategi");
+            userLogin.Add("Alex", "skydd");
 
-        //        DoMainMenu(dataProvider);
-        //    }
-           
+            DataProvider dataProvider = new DataProvider(connectionString);
 
-        //}
+            while (true)
+            {
+            //    Authenticate(userLogin);
+
+                DoMainMenu(dataProvider);
+            }
+
+
+        }
     }
         
     

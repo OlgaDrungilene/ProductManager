@@ -102,7 +102,8 @@ namespace ProductManager
         public Product GetProduct(string articleNumber)
         {
              string sql = @"
-                SELECT ArticleNumber,
+                SELECT ID,
+                       ArticleNumber,
                        Name,
                        Description,
                        ImageUrl,
@@ -126,7 +127,7 @@ namespace ProductManager
             return null;
 
             Product product = new Product();
-            product.ID = reader.GetInt32(0);
+            product.ID= reader.GetInt32(0);
             product.ArticleNumber = reader.GetString(1);
             product.Name = reader.GetString(2);
             product.ImageURL = reader.GetString(3);
@@ -247,21 +248,10 @@ namespace ProductManager
             using SqlConnection connection = new(ConnectionString);
           
             using SqlCommand command = new(sql, connection);
-            /* List<ProductCategory> categories = new List<ProductCategory>();
-
-             //string sql = @"
-             //    SELECT ID,
-             //           Name,
-             //           Description,
-             //           ImageURL
-             //    FROM ProductCategories
-             //";
-             //using SqlConnection connection = new(ConnectionString);
-             //using SqlCommand command = new (sql, connection);
-
+            
+            List<ProductCategory> categories = new List<ProductCategory>();
+            
             var reader = command.ExecuteReader();
-
-            List<ProductCategory> productCategoryList = new ();
 
             while (reader.Read())
             {
@@ -270,9 +260,9 @@ namespace ProductManager
                 var imageUrl = (string)reader["ImageUrl"];
 
                 ProductCategory productCategory = new(name, description, imageUrl);
-                productCategoryList.Add(productCategory);
+                categories.Add(productCategory);
             }
-            return productCategoryList;
+            return categories;
         }
 
     }
