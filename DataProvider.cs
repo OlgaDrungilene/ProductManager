@@ -18,9 +18,8 @@ namespace ProductManager
         public bool IsUserPresent(string userName, string password)
         {
             string sql = @"
-              SELECT COUNT(*) FROM Users
-              WHERE UserName = @Name;
-              WHERE Password = @Password;
+              SELECT COUNT(*) FROM [Users]
+              WHERE Name = @Name AND Password = @Password
             ";
             using SqlConnection connection = new(ConnectionString);
 
