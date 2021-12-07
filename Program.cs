@@ -12,7 +12,7 @@ namespace ProductManager
     {
         static string connectionString = "Server=.;Database=ProductManager;Integrated Security=True";
         
-        static void Authenticate(string userName, string password, DataProvider dataProvider)
+        static void Authenticate(DataProvider dataProvider)
         {
            
             bool invalidUser;
@@ -25,10 +25,10 @@ namespace ProductManager
                 Console.WriteLine("Username:\nPassword:");
 
                 SetCursorPosition(10, 0);
-                userName = Console.ReadLine();
+                string userName = Console.ReadLine();
 
                 SetCursorPosition(10, 1);
-                password = Console.ReadLine();
+                string password = Console.ReadLine();
 
                
                 if (dataProvider.IsUserPresent(userName, password ))
@@ -355,28 +355,19 @@ namespace ProductManager
             p.Price = Convert.ToDecimal(ReadLine());
         }
 
-     
-        //static void Main(string[] args)
-        //{
-           
-        //    Dictionary<string, string> userLogin = new();
-        //    userLogin.Add("Tina", "strategi");
-        //    userLogin.Add("Alex", "skydd");
 
-        //    DataProvider dataProvider = new DataProvider(connectionString);
+        static void Main(string[] args)
+        {
+            DataProvider dataProvider = new DataProvider(connectionString);
+            while (true)
+            {
+                Authenticate(dataProvider);
 
-        //    while (true)
-        //    {
-        //        Authenticate(userLogin);
-
-        //        DoMainMenu(dataProvider);
-        //    }
-           
-
-        //}
+                DoMainMenu(dataProvider);
+            }
+        }
     }
-        
-    
+            
 }
         
     

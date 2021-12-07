@@ -23,6 +23,7 @@ CONSTRAINT AN_ArticleNumber UNIQUE(ArticleNumber),
 PRIMARY KEY (ID),
  )
 
+ USE ProductManager
  CREATE TABLE Users (
  Id INT IDENTITY,
  Name NVARCHAR(13),
@@ -30,6 +31,7 @@ PRIMARY KEY (ID),
  PRIMARY KEY (ID)
  )
 
+ COMMIT
 
 
 
