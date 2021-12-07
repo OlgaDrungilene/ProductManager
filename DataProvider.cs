@@ -230,9 +230,7 @@ namespace ProductManager
 
              command.ExecuteNonQuery();
 
-             connection.Close();
-
-        }
+             }
 
         public List<ProductCategory> GetAllCategories()
         {
