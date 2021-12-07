@@ -280,6 +280,7 @@ namespace ProductManager
             using SqlCommand command = new(sql, connection);
             
             List<ProductCategory> categories = new List<ProductCategory>();
+            connection.Open();
             
             var reader = command.ExecuteReader();
 
@@ -290,7 +291,10 @@ namespace ProductManager
                 var description = (string)reader["Description"];
                 var imageUrl = (string)reader["ImageUrl"];
 
-                ProductCategory productCategory = new(name, description, imageUrl);
+                ProductCategory productCategory = new(name, description, imageUrl)
+                {
+                    ID = id
+                };
                 categories.Add(productCategory);
             }
             return categories;
