@@ -202,12 +202,11 @@ namespace ProductManager
 
              command.ExecuteNonQuery();
 
-             connection.Close();
-
-        }
+             }
 
         public List<ProductCategory> GetAllCategories()
         {
+            throw new NotImplementedException();
            /* List<ProductCategory> categories = new List<ProductCategory>();
 
             //string sql = @"
