@@ -3,13 +3,17 @@ GO
 
 USE ProductManager
 
-CREATE TABLE ProductCategories (
+CREATE TABLE Categories (
 ID INT IDENTITY,
 Name NVARCHAR (13) NOT NULL,
 Description NVARCHAR (100),
 ImageURL NVARCHAR (50),
 PRIMARY KEY (ID)
 )
+
+DROP TABLE Products
+
+
 
 CREATE TABLE Products (
 ID INT IDENTITY,
@@ -18,7 +22,6 @@ Name NVARCHAR (50) NOT NULL,
 Description NVARCHAR(50),
 ImageURL NVARCHAR(50),
 Price DECIMAL NOT NULL,
-IDCategory int FOREIGN KEY REFERENCES ProductCategories(ID)
 CONSTRAINT AN_ArticleNumber UNIQUE(ArticleNumber),
 PRIMARY KEY (ID),
  )
@@ -28,6 +31,15 @@ PRIMARY KEY (ID),
  Name NVARCHAR(13),
  Password NVARCHAR(25),
  PRIMARY KEY (ID)
+ )
+
+ 
+  CREATE TABLE ProductsCategories (
+  ID INT IDENTITY,
+  IDProduct INT  FOREIGN KEY REFERENCES Products(ID) ON DELETE CASCADE,
+  IDCategory INT FOREIGN KEY REFERENCES Categories(ID) ON DELETE CASCADE,
+  PRIMARY KEY (ID),
+  CONSTRAINT IDProductCategory UNIQUE(IDProduct, IDCategory)
  )
 
 

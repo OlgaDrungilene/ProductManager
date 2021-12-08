@@ -199,7 +199,7 @@ namespace ProductManager
 
                         } while (ReadKey(true).Key == ConsoleKey.N);
 
-                        ProductCategory category = new ProductCategory( name, description, imageURL);
+                        Category category = new Category( name, description, imageURL);
 
                         if (dataProvider.IsCategoryPresent(category.Name))
                         {
@@ -235,9 +235,16 @@ namespace ProductManager
 
                             if (dataProvider.IsCategoryPresent(categoryName))
                             {
-                                dataProvider.SaveProduct(categoryName,a);
+                                if (dataProvider.IsProductInCategory(a, categoryName))
+                                {
+                                    WriteLine("This product already exists");
+                                }
+                                else
+                                {
+                                    dataProvider.SaveProduct(categoryName, a);
 
-                                WriteLine("Product added to category");
+                                    WriteLine("Product added to category");
+                                }
                             }
                             else
                             {
@@ -262,7 +269,7 @@ namespace ProductManager
                         WriteLine("Name                         Price");
                         WriteLine("-------------------------------------------------");
 
-                        foreach (ProductCategory cat in dataProvider.GetAllCategories())
+                        foreach (Category cat in dataProvider.GetAllCategories())
                         {
                             dataProvider.PopulateCategoryProducts(cat);
                             WriteLine(cat.Name + " (" + cat.Products.Count + ")");

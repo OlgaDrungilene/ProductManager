@@ -157,10 +157,10 @@ namespace ProductManager
             return;
 
         }
-        public void AddCategory(ProductCategory category)
+        public void AddCategory(Category category)
         {
             string sql = @"
-                INSERT INTO ProductCategories (
+                INSERT INTO Categories (
                     Name, 
                     Description,
                     ImageURL
@@ -191,7 +191,7 @@ namespace ProductManager
         {
             //TODO implement Sql
             string sql = @"
-              SELECT COUNT(*) FROM ProductCategories
+              SELECT COUNT(*) FROM Categories
               WHERE Name = @Category;
             ";
             using SqlConnection connection = new(ConnectionString);
@@ -213,10 +213,8 @@ namespace ProductManager
         public void SaveProduct(string categoryName, Product product)
         {
             string sql = @"
-                  UPDATE Products SET IDCategory = 
-                 (SELECT ID FROM ProductCategories
-                  WHERE Name = @categoryName)
-                  WHERE ID = @productId
+                  INSERT INTO ProductsCategories (IDProduct, IDCategory) 
+                  (SELECT @productId, ID FROM Categories WHERE Name = @categoryName)
              ";
 
              using SqlConnection connection = new(ConnectionString);
@@ -232,18 +230,19 @@ namespace ProductManager
 
              }
 
-        public void PopulateCategoryProducts(ProductCategory category)
+        public void PopulateCategoryProducts(Category category)
         {
             string sql = @"
+                
                 SELECT ID,
                        ArticleNumber,
                        Name,
                        Description,
                        ImageURL,
-                       Price,
-                       IDCategory
+                       Price
                   FROM Products
-                 WHERE IDCategory = @idCategory";
+                 WHERE ID IN 
+				 (SELECT IDProduct FROM ProductsCategories WHERE IDCategory = @idCategory)";
             using SqlConnection connection = new(ConnectionString);
             using SqlCommand command = new(sql, connection);
             command.Parameters.AddWithValue("@idCategory", category.ID);
@@ -265,7 +264,7 @@ namespace ProductManager
             return;
         }
 
-        public List<ProductCategory> GetAllCategories()
+        public List<Category> GetAllCategories()
         {
 
             string sql = @"
@@ -273,13 +272,13 @@ namespace ProductManager
                        Name,
                        Description,
                        ImageUrl
-                FROM ProductCategories
+                 FROM  Categories
             ";
             using SqlConnection connection = new(ConnectionString);
           
             using SqlCommand command = new(sql, connection);
             
-            List<ProductCategory> categories = new List<ProductCategory>();
+            List<Category> categories = new List<Category>();
             connection.Open();
             
             var reader = command.ExecuteReader();
@@ -291,7 +290,7 @@ namespace ProductManager
                 var description = (string)reader["Description"];
                 var imageUrl = (string)reader["ImageUrl"];
 
-                ProductCategory productCategory = new(name, description, imageUrl)
+                Category productCategory = new(name, description, imageUrl)
                 {
                     ID = id
                 };
@@ -300,5 +299,30 @@ namespace ProductManager
             return categories;
         }
 
+        internal bool IsProductInCategory(Product a, string categoryName)
+        {
+            string sql = @"
+             SELECT COUNT(*) 
+               FROM ProductsCategories 
+              WHERE IDProduct = @IDProduct AND IDCategory IN (SELECT ID FROM Categories WHERE Name = @Name)
+
+            ";
+            using SqlConnection connection = new(ConnectionString);
+
+            using SqlCommand command = new(sql, connection);
+
+            command.Parameters.AddWithValue("@IDProduct",a.ID );
+            command.Parameters.AddWithValue("@Name",categoryName);
+
+            connection.Open();
+
+            var reader = command.ExecuteReader();
+            reader.Read();
+
+            if (reader.GetInt32(0) == 0)
+                return false;
+
+            return true;
+        }
     }
 }
