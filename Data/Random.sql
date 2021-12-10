@@ -13,6 +13,7 @@ VALUES
 ( 'Shoes', 'leather shoes for any season and occasion', 'http://images/vie678tw.png')
 
 
+
 INSERT INTO Products (ArticleNumber, Name, Description, ImageURL, Price)
 VALUES
 ('B72354' ,'Leather pants' , 'Black colour, skinny', 'http://placeholder233.com', 1500),

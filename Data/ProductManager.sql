@@ -3,17 +3,18 @@ GO
 
 USE ProductManager
 
+DROP TABLE Categories
+
 CREATE TABLE Categories (
 ID INT IDENTITY,
 Name NVARCHAR (13) NOT NULL,
 Description NVARCHAR (100),
 ImageURL NVARCHAR (50),
+IDParent INT FOREIGN KEY REFERENCES Categories(ID),
 PRIMARY KEY (ID)
 )
 
 DROP TABLE Products
-
-
 
 CREATE TABLE Products (
 ID INT IDENTITY,
@@ -33,7 +34,8 @@ PRIMARY KEY (ID),
  PRIMARY KEY (ID)
  )
 
- 
+ DROP TABLE ProductsCategories
+
   CREATE TABLE ProductsCategories (
   ID INT IDENTITY,
   IDProduct INT  FOREIGN KEY REFERENCES Products(ID) ON DELETE CASCADE,

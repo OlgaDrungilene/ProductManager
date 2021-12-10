@@ -124,9 +124,9 @@ namespace ProductManager
                         if (dataProvider.IsArticlePresent(articleNumber))
                         {
                             Product a = dataProvider.GetProduct(articleNumber);
-                            
+
                             ConsoleKey key;
-                           
+
                             while (true)
                             {
 
@@ -140,7 +140,7 @@ namespace ProductManager
                                 do
                                 {
                                     key = ReadKey(true).Key;
-                               
+
                                 } while (key != ConsoleKey.Escape && key != ConsoleKey.D);
 
                                 if (key == (ConsoleKey.D))
@@ -160,7 +160,7 @@ namespace ProductManager
                                         dataProvider.RemoveProduct(articleNumber);
 
                                         WriteLine("Product deleted");
-                                       
+
                                         Thread.Sleep(2000);
 
                                         break;
@@ -188,18 +188,18 @@ namespace ProductManager
                     case ConsoleKey.NumPad3:
 
                         string name, description, imageURL;
-                        
+
                         do
                         {
                             Clear();
 
-                            AddCategory( out name, out description, out imageURL);
+                            AddCategory(out name, out description, out imageURL);
 
                             Write("\nIs this correct Y(es) N(o)");
 
                         } while (ReadKey(true).Key == ConsoleKey.N);
 
-                        Category category = new Category( name, description, imageURL);
+                        Category category = new Category(name, description, imageURL);
 
                         if (dataProvider.IsCategoryPresent(category.Name))
                         {
@@ -211,7 +211,7 @@ namespace ProductManager
 
                             WriteLine("Category added");
                         }
-                      
+
                         Thread.Sleep(2000);
                         break;
 
@@ -278,7 +278,7 @@ namespace ProductManager
                             {
                                 WriteLine("  " + product.Name + "\t\t" + product.Price);
                             }
-                          
+
                         }
                         WaitForEscape();
 
@@ -287,17 +287,56 @@ namespace ProductManager
                     case ConsoleKey.D6:
                     case ConsoleKey.NumPad6:
 
-                        Clear();
+                        while (true)
+                        {
 
-                       // TODO
-                       // string parentCategory = ReadLine();
-                       // string childCategory = ReadLine();
+                            Clear();
 
-                        WriteLine ("Parent category: ");
-                        WriteLine ("Child category: ");
+                            WriteLine("Parent category: \n Child category:");
 
+                            SetCursorPosition(17, 0);
+                            string parentCategory = ReadLine();
+
+                            if (!dataProvider.IsCategoryPresent(parentCategory))
+                            {
+                                WriteLine("Category not found");
+
+                                Thread.Sleep(2000);
+                                break;
+                            }
+
+                            SetCursorPosition(16, 1);
+                            string childCategory = ReadLine();
+
+                            if (!dataProvider.IsCategoryPresent(childCategory))
+                            {
+                                WriteLine("Category not found");
+
+                                Thread.Sleep(2000);
+                                break;
+                            }
+
+                            WriteLine("Is this correct? (Y)es (N)o");
+
+                            ConsoleKey key;
+                            do
+                            {
+                                key = ReadKey(true).Key;
+                            } while (key != ConsoleKey.Y && key != ConsoleKey.N);
+
+                            if (key == (ConsoleKey.Y))
+                            {
+                                dataProvider.AddCategoryToCategory(parentCategory,childCategory);
+
+                                WriteLine("Categories connected");
+
+                                Thread.Sleep(2000);
+
+                                break;
+                            }
+
+                        }
                         break;
-
                     case ConsoleKey.D7:
                     case ConsoleKey.NumPad7:
 
