@@ -14,6 +14,31 @@ namespace ProductManager
         {
             ConnectionString = connectionString;
         }
+
+        public bool IsUserPresent(string userName, string password)
+        {
+            string sql = @"
+              SELECT COUNT(*) FROM [Users]
+              WHERE Name = @Name AND Password = @Password
+            ";
+            using SqlConnection connection = new(ConnectionString);
+
+            using SqlCommand command = new(sql, connection);
+
+            command.Parameters.AddWithValue("@Name", userName);
+            command.Parameters.AddWithValue("@Password", password);
+
+            connection.Open();
+
+            var reader = command.ExecuteReader();
+            reader.Read();
+
+            if (reader.GetInt32(0) == 0)
+                return false;
+
+            return true;
+        }
+
         public void SaveProduct(Product product)
         {
             string sql = @"
@@ -75,13 +100,16 @@ namespace ProductManager
 
         public Product GetProduct(string articleNumber)
         {
-            string sql = @"
-                INSERT INTO Products (
-                    ArticleNumber,
-                   
-                ) VALUES (
-                    @ArticleNumber,
-                )
+             string sql = @"
+                SELECT ID,
+                       ArticleNumber,
+                       Name,
+                       Description,
+                       ImageUrl,
+                       Price
+                  FROM Products
+                 WHERE ArticleNumber = @ArticleNumber
+                
             ";
 
             using SqlConnection connection = new(ConnectionString);
@@ -98,7 +126,7 @@ namespace ProductManager
             return null;
 
             Product product = new Product();
-            product.ID = reader.GetInt32(0);
+            product.ID= reader.GetInt32(0);
             product.ArticleNumber = reader.GetString(1);
             product.Name = reader.GetString(2);
             product.ImageURL = reader.GetString(3);
@@ -129,11 +157,10 @@ namespace ProductManager
             return;
 
         }
-
-        public void AddCategory(ProductCategory category)
+        public void AddCategory(Category category)
         {
-           /* string sql = @"
-                INSERT INTO ProductCategories (
+            string sql = @"
+                INSERT INTO Categories (
                     Name, 
                     Description,
                     ImageURL
@@ -157,14 +184,14 @@ namespace ProductManager
             command.ExecuteNonQuery();
 
             connection.Close();
-            return;*/
+            return;
         }
 
         public bool IsCategoryPresent(string name)
         {
             //TODO implement Sql
             string sql = @"
-              SELECT COUNT(*) FROM ProductCategories
+              SELECT COUNT(*) FROM Categories
               WHERE Name = @Category;
             ";
             using SqlConnection connection = new(ConnectionString);
@@ -186,10 +213,8 @@ namespace ProductManager
         public void SaveProduct(string categoryName, Product product)
         {
             string sql = @"
-                  UPDATE Products SET IDCategory = 
-                 (SELECT ID FROM ProductCategories
-                  WHERE Name = @categoryName)
-                  WHERE ID = @productId
+                  INSERT INTO ProductsCategories (IDProduct, IDCategory) 
+                  (SELECT @productId, ID FROM Categories WHERE Name = @categoryName)
              ";
 
              using SqlConnection connection = new(ConnectionString);
@@ -203,22 +228,21 @@ namespace ProductManager
 
              command.ExecuteNonQuery();
 
-             connection.Close();
+             }
 
-        }
-
-        public void PopulateCategoryProducts(ProductCategory category)
+        public void PopulateCategoryProducts(Category category)
         {
             string sql = @"
+                
                 SELECT ID,
                        ArticleNumber,
                        Name,
                        Description,
                        ImageURL,
-                       Price,
-                       IDCategory
+                       Price
                   FROM Products
-                 WHERE IDCategory = @idCategory";
+                 WHERE ID IN 
+				 (SELECT IDProduct FROM ProductsCategories WHERE IDCategory = @idCategory)";
             using SqlConnection connection = new(ConnectionString);
             using SqlCommand command = new(sql, connection);
             command.Parameters.AddWithValue("@idCategory", category.ID);
@@ -240,7 +264,7 @@ namespace ProductManager
             return;
         }
 
-        public List<ProductCategory> GetAllCategories()
+        public List<Category> GetAllCategories()
         {
 
             string sql = @"
@@ -248,17 +272,16 @@ namespace ProductManager
                        Name,
                        Description,
                        ImageUrl
-                FROM ProductCategories
+                 FROM  Categories
             ";
             using SqlConnection connection = new(ConnectionString);
           
             using SqlCommand command = new(sql, connection);
-
+            
+            List<Category> categories = new List<Category>();
             connection.Open();
-
+            
             var reader = command.ExecuteReader();
-
-            List<ProductCategory> productCategoryList = new ();
 
             while (reader.Read())
             {
@@ -267,14 +290,64 @@ namespace ProductManager
                 var description = (string)reader["Description"];
                 var imageUrl = (string)reader["ImageUrl"];
 
-                ProductCategory productCategory = new(name, description, imageUrl) { ID = id };
-                productCategoryList.Add(productCategory);
+                Category productCategory = new(name, description, imageUrl)
+                {
+                    ID = id
+                };
+                categories.Add(productCategory);
             }
-            return productCategoryList;
+            return categories;
+        }
+
+        internal bool IsProductInCategory(Product a, string categoryName)
+        {
+            string sql = @"
+             SELECT COUNT(*) 
+               FROM ProductsCategories 
+              WHERE IDProduct = @IDProduct AND IDCategory IN (SELECT ID FROM Categories WHERE Name = @Name)
+
+            ";
+            using SqlConnection connection = new(ConnectionString);
+
+            using SqlCommand command = new(sql, connection);
+
+            command.Parameters.AddWithValue("@IDProduct", a.ID);
+            command.Parameters.AddWithValue("@Name", categoryName);
+
+            connection.Open();
+
+            var reader = command.ExecuteReader();
+            reader.Read();
+
+            if (reader.GetInt32(0) == 0)
+                return false;
+
+            return true;
         }
         public void GetAllCategories(int? parentId)
         {
 
-        }
+       public void AddCategoryToCategory(string parentCategory,string childCategory)
+       
+        {  string sql = @"
+                
+                 UPDATE Categories SET IDParent = (SELECT ID FROM Categories WHERE Name = @ParentCategory)
+                  
+                  WHERE Name = @ChildCategory
+                        ";
+
+            using SqlConnection connection = new (ConnectionString);
+
+            using SqlCommand command = new (sql, connection);
+
+            command.Parameters.AddWithValue("@ParentCategory", parentCategory);
+            command.Parameters.AddWithValue("@ChildCategory", childCategory);
+            
+
+            connection.Open();
+
+            command.ExecuteNonQuery();
+
+           }
     }
 }

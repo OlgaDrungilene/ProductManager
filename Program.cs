@@ -12,11 +12,12 @@ namespace ProductManager
     {
         static string connectionString = "Server=.;Database=ProductManager;Integrated Security=True";
         
-        static void Authenticate(Dictionary<string, string> userLogins)
+        static void Authenticate(DataProvider dataProvider)
         {
-            string username, password;
-
+           
             bool invalidUser;
+
+            invalidUser = false;
 
             do
             {
@@ -24,13 +25,13 @@ namespace ProductManager
                 Console.WriteLine("Username:\nPassword:");
 
                 SetCursorPosition(10, 0);
-                username = Console.ReadLine();
+                string userName = Console.ReadLine();
 
                 SetCursorPosition(10, 1);
-                password = Console.ReadLine();
+                string password = Console.ReadLine();
 
-                invalidUser = (!userLogins.ContainsKey(username) || userLogins[username] != password);
-
+                invalidUser = !dataProvider.IsUserPresent(userName, password);
+               
                 if (invalidUser)
                 {
                     Write("Invalid credentials, please try again");
@@ -55,7 +56,8 @@ namespace ProductManager
                 WriteLine("3. Add category");
                 WriteLine("4. Add product to category");
                 WriteLine("5. List categories");
-                WriteLine("6. Logout");
+                WriteLine("6. Add category to category");
+                WriteLine("7. Logout");
 
                 ConsoleKeyInfo input;
 
@@ -70,7 +72,8 @@ namespace ProductManager
                                    || input.Key == ConsoleKey.D3 || input.Key == ConsoleKey.NumPad3
                                    || input.Key == ConsoleKey.D4 || input.Key == ConsoleKey.NumPad4
                                    || input.Key == ConsoleKey.D5 || input.Key == ConsoleKey.NumPad5
-                                   || input.Key == ConsoleKey.D6 || input.Key == ConsoleKey.NumPad6);
+                                   || input.Key == ConsoleKey.D6 || input.Key == ConsoleKey.NumPad6
+                                   || input.Key == ConsoleKey.D7 || input.Key == ConsoleKey.NumPad7);
                 }
                 while (invalidChoice);
 
@@ -121,9 +124,9 @@ namespace ProductManager
                         if (dataProvider.IsArticlePresent(articleNumber))
                         {
                             Product a = dataProvider.GetProduct(articleNumber);
-                            
+
                             ConsoleKey key;
-                           
+
                             while (true)
                             {
 
@@ -137,7 +140,7 @@ namespace ProductManager
                                 do
                                 {
                                     key = ReadKey(true).Key;
-                               
+
                                 } while (key != ConsoleKey.Escape && key != ConsoleKey.D);
 
                                 if (key == (ConsoleKey.D))
@@ -157,7 +160,7 @@ namespace ProductManager
                                         dataProvider.RemoveProduct(articleNumber);
 
                                         WriteLine("Product deleted");
-                                       
+
                                         Thread.Sleep(2000);
 
                                         break;
@@ -185,18 +188,18 @@ namespace ProductManager
                     case ConsoleKey.NumPad3:
 
                         string name, description, imageURL;
-                        
+
                         do
                         {
                             Clear();
 
-                            AddCategory( out name, out description, out imageURL);
+                            AddCategory(out name, out description, out imageURL);
 
                             Write("\nIs this correct Y(es) N(o)");
 
                         } while (ReadKey(true).Key == ConsoleKey.N);
 
-                        ProductCategory category = new ProductCategory( name, description, imageURL);
+                        Category category = new Category(name, description, imageURL);
 
                         if (dataProvider.IsCategoryPresent(category.Name))
                         {
@@ -208,7 +211,7 @@ namespace ProductManager
 
                             WriteLine("Category added");
                         }
-                      
+
                         Thread.Sleep(2000);
                         break;
 
@@ -232,9 +235,16 @@ namespace ProductManager
 
                             if (dataProvider.IsCategoryPresent(categoryName))
                             {
-                                dataProvider.SaveProduct(categoryName,a);
+                                if (dataProvider.IsProductInCategory(a, categoryName))
+                                {
+                                    WriteLine("This product already exists");
+                                }
+                                else
+                                {
+                                    dataProvider.SaveProduct(categoryName, a);
 
-                                WriteLine("Product added to category");
+                                    WriteLine("Product added to category");
+                                }
                             }
                             else
                             {
@@ -277,6 +287,59 @@ namespace ProductManager
 
                     case ConsoleKey.D6:
                     case ConsoleKey.NumPad6:
+
+                        while (true)
+                        {
+
+                            Clear();
+
+                            WriteLine("Parent category: \n Child category:");
+
+                            SetCursorPosition(17, 0);
+                            string parentCategory = ReadLine();
+
+                            if (!dataProvider.IsCategoryPresent(parentCategory))
+                            {
+                                WriteLine("Category not found");
+
+                                Thread.Sleep(2000);
+                                break;
+                            }
+
+                            SetCursorPosition(16, 1);
+                            string childCategory = ReadLine();
+
+                            if (!dataProvider.IsCategoryPresent(childCategory))
+                            {
+                                WriteLine("Category not found");
+
+                                Thread.Sleep(2000);
+                                break;
+                            }
+
+                            WriteLine("Is this correct? (Y)es (N)o");
+
+                            ConsoleKey key;
+                            do
+                            {
+                                key = ReadKey(true).Key;
+                            } while (key != ConsoleKey.Y && key != ConsoleKey.N);
+
+                            if (key == (ConsoleKey.Y))
+                            {
+                                dataProvider.AddCategoryToCategory(parentCategory,childCategory);
+
+                                WriteLine("Categories connected");
+
+                                Thread.Sleep(2000);
+
+                                break;
+                            }
+
+                        }
+                        break;
+                    case ConsoleKey.D7:
+                    case ConsoleKey.NumPad7:
 
                         return;
 
@@ -371,28 +434,19 @@ namespace ProductManager
             p.Price = Convert.ToDecimal(ReadLine());
         }
 
-     
+
         static void Main(string[] args)
         {
-           
-            Dictionary<string, string> userLogin = new();
-            userLogin.Add("Tina", "strategi");
-            userLogin.Add("Alex", "skydd");
-
             DataProvider dataProvider = new DataProvider(connectionString);
-
             while (true)
             {
-                Authenticate(userLogin);
+                Authenticate(dataProvider);
 
                 DoMainMenu(dataProvider);
             }
-           
-
         }
     }
-        
-    
+            
 }
         
     
