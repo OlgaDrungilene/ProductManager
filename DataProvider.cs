@@ -326,7 +326,7 @@ namespace ProductManager
         }
         public void GetAllCategories(int? parentId)
         {
-
+        }
        public void AddCategoryToCategory(string parentCategory,string childCategory)
        
         {  string sql = @"
