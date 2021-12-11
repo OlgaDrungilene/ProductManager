@@ -110,7 +110,7 @@ namespace ProductManager
                   FROM Products
                  WHERE ArticleNumber = @ArticleNumber
                 
-            ";
+             ";
 
             using SqlConnection connection = new(ConnectionString);
 
@@ -119,6 +119,7 @@ namespace ProductManager
             command.Parameters.AddWithValue("@ArticleNumber", articleNumber);
 
             connection.Open();
+
             var reader = command.ExecuteReader();
            
             if  (reader.Read()==false)
@@ -189,7 +190,6 @@ namespace ProductManager
 
         public bool IsCategoryPresent(string name)
         {
-            //TODO implement Sql
             string sql = @"
               SELECT COUNT(*) FROM Categories
               WHERE Name = @Category;
@@ -215,14 +215,14 @@ namespace ProductManager
             string sql = @"
                   INSERT INTO ProductsCategories (IDProduct, IDCategory) 
                   (SELECT @productId, ID FROM Categories WHERE Name = @categoryName)
-             ";
+            ";
 
              using SqlConnection connection = new(ConnectionString);
 
              using SqlCommand command = new(sql, connection);
 
              command.Parameters.AddWithValue("@categoryName", categoryName);
-            command.Parameters.AddWithValue("@productId", product.ID);
+             command.Parameters.AddWithValue("@productId", product.ID);
 
              connection.Open();
 
@@ -242,9 +242,13 @@ namespace ProductManager
                        Price
                   FROM Products
                  WHERE ID IN 
-				 (SELECT IDProduct FROM ProductsCategories WHERE IDCategory = @idCategory)";
+				 (SELECT IDProduct FROM ProductsCategories WHERE IDCategory = @idCategory)
+            ";
+
             using SqlConnection connection = new(ConnectionString);
+
             using SqlCommand command = new(sql, connection);
+
             command.Parameters.AddWithValue("@idCategory", category.ID);
 
             connection.Open();
@@ -266,7 +270,6 @@ namespace ProductManager
 
         public List<Category> GetAllCategories()
         {
-
             string sql = @"
                 SELECT ID,
                        Name,
@@ -274,6 +277,7 @@ namespace ProductManager
                        ImageUrl
                  FROM  Categories
             ";
+
             using SqlConnection connection = new(ConnectionString);
           
             using SqlCommand command = new(sql, connection);
@@ -324,17 +328,68 @@ namespace ProductManager
 
             return true;
         }
-        public void GetAllCategories(int? parentId)
+        public List<Category> GetAllCategories(int? parentId)
         {
+            string sql = "";
+
+            using SqlConnection connection = new(ConnectionString);
+
+            using SqlCommand command = connection.CreateCommand();
+
+            if (parentId == null)
+            {
+                sql = @"
+                SELECT ID,
+                       Name,
+                       Description,
+                       ImageUrl
+                 FROM  Categories
+                 WHERE IDParent IS NULL
+                ";                
+            } 
+            else
+            {
+                sql = @"
+                SELECT ID,
+                       Name,
+                       Description,
+                       ImageUrl
+                 FROM  Categories
+                 WHERE IDParent = @parentId
+                ";
+                command.Parameters.AddWithValue("@parentId", parentId);
+            }
+
+            command.CommandText = sql;
+
+            List<Category> categories = new List<Category>();
+            connection.Open();
+
+            var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var id = (int)reader["ID"];
+                var name = (string)reader["Name"];
+                var description = (string)reader["Description"];
+                var imageUrl = (string)reader["ImageUrl"];
+
+                Category productCategory = new(name, description, imageUrl)
+                {
+                    ID = id
+                };
+                categories.Add(productCategory);
+            }
+            return categories;
+
         }
        public void AddCategoryToCategory(string parentCategory,string childCategory)
        
-        {  string sql = @"
-                
+        {  
+            string sql = @"
                  UPDATE Categories SET IDParent = (SELECT ID FROM Categories WHERE Name = @ParentCategory)
-                  
                   WHERE Name = @ChildCategory
-                        ";
+            ";
 
             using SqlConnection connection = new (ConnectionString);
 
@@ -343,7 +398,6 @@ namespace ProductManager
             command.Parameters.AddWithValue("@ParentCategory", parentCategory);
             command.Parameters.AddWithValue("@ChildCategory", childCategory);
             
-
             connection.Open();
 
             command.ExecuteNonQuery();

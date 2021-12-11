@@ -266,8 +266,8 @@ namespace ProductManager
                     case ConsoleKey.D5:
                     case ConsoleKey.NumPad5:
 
-                        WriteLine("Name                         Price");
-                        WriteLine("-------------------------------------------------");
+                        WriteLine("Name                                         Price");
+                        WriteLine("---------------------------------------------------------");
 
                         PrintCategory(dataProvider, null, 0);
                         /*foreach (ProductCategory cat in dataProvider.GetAllCategories())
@@ -350,16 +350,26 @@ namespace ProductManager
 
         private static void PrintCategory(DataProvider dataProvider, int? parentId, int level)
         {
-            // 1. Запросить все категории у которых PARENTID совпадает с parentId 
+            // 1. Få alla PARENTID = parentId 
 
-            dataProvider.GetAllCategories(parentId);
+            List <Category> categories = dataProvider.GetAllCategories(parentId);
 
-            // 2. Для каждой полученной категории
-            // 3.   запросить список продуктов
-            // 4.   напечатать своё имя (добавив level * 2 пробелов слева)
-            // 5.   напечать свои продукты (добавив (level+1) * 2 пробелов слева)
-            // 6.   вызвать PrintCategory передав свой id вкачестве parentId и level + 1
+            // 2. För varje kategori, som vi får
 
+            foreach (Category category in categories)
+            {
+                dataProvider.PopulateCategoryProducts(category);
+
+                WriteLine(new String(' ', level * 2) + category.Name);
+            
+                foreach (Product product in category.Products)
+                {
+                    WriteLine((new String(' ', (level + 1) * 2) + product.Name).PadRight(45) + product.Price);
+                }
+
+                PrintCategory(dataProvider, category.ID, level + 1);
+            }
+           
         }
 
         /// <summary>
