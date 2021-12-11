@@ -272,6 +272,9 @@ namespace ProductManager
             }
             return productCategoryList;
         }
+        public void GetAllCategories(int? parentId)
+        {
 
+        }
     }
 }

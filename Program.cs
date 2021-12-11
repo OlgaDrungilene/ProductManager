@@ -259,7 +259,8 @@ namespace ProductManager
                         WriteLine("Name                         Price");
                         WriteLine("-------------------------------------------------");
 
-                        foreach (ProductCategory cat in dataProvider.GetAllCategories())
+                        PrintCategory(dataProvider, null, 0);
+                        /*foreach (ProductCategory cat in dataProvider.GetAllCategories())
                         {
                             dataProvider.PopulateCategoryProducts(cat);
                             WriteLine(cat.Name + " (" + cat.Products.Count + ")");
@@ -269,7 +270,7 @@ namespace ProductManager
                                 WriteLine("  " + product.Name + "\t\t" + product.Price);
                             }
                           
-                        }
+                        }*/
                         WaitForEscape();
 
                         break;
@@ -281,6 +282,20 @@ namespace ProductManager
 
                 }
             }
+
+        }
+
+        private static void PrintCategory(DataProvider dataProvider, int? parentId, int level)
+        {
+            // 1. Запросить все категории у которых PARENTID совпадает с parentId 
+
+            dataProvider.GetAllCategories(parentId);
+
+            // 2. Для каждой полученной категории
+            // 3.   запросить список продуктов
+            // 4.   напечатать своё имя (добавив level * 2 пробелов слева)
+            // 5.   напечать свои продукты (добавив (level+1) * 2 пробелов слева)
+            // 6.   вызвать PrintCategory передав свой id вкачестве parentId и level + 1
 
         }
 
