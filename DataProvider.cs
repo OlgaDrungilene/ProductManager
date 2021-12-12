@@ -403,5 +403,30 @@ namespace ProductManager
             command.ExecuteNonQuery();
 
            }
+     public int GetProductsCount(Category category)
+        {
+            string sql = @"
+              WITH cte AS(
+              SELECT ID FROM Categories WHERE IDParent = @ID UNION ALL
+            SELECT c.ID FROM Categories c JOIN cte ON c.IDParent = cte.ID
+                          )
+        SELECT COUNT(*) FROM ProductsCategories 
+                       WHERE IDCategory IN(SELECT * FROM cte UNION ALL SELECT @ID)
+            ";
+            using SqlConnection connection = new(ConnectionString);
+
+            using SqlCommand command = new(sql, connection);
+
+            command.Parameters.AddWithValue("@ID", category.ID);
+            
+            connection.Open();
+
+            var reader = command.ExecuteReader();
+            reader.Read();
+
+            return (reader.GetInt32(0));
+           
+        }
+
     }
 }

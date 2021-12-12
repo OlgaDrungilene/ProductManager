@@ -270,17 +270,7 @@ namespace ProductManager
                         WriteLine("---------------------------------------------------------");
 
                         PrintCategory(dataProvider, null, 0);
-                        /*foreach (ProductCategory cat in dataProvider.GetAllCategories())
-                        {
-                            dataProvider.PopulateCategoryProducts(cat);
-                            WriteLine(cat.Name + " (" + cat.Products.Count + ")");
-
-                            foreach (Product product in cat.Products)
-                            {
-                                WriteLine("  " + product.Name + "\t\t" + product.Price);
-                            }
-                          
-                        }*/
+                       
                         WaitForEscape();
 
                         break;
@@ -360,13 +350,21 @@ namespace ProductManager
             {
                 dataProvider.PopulateCategoryProducts(category);
 
-                WriteLine(new String(' ', level * 2) + category.Name);
-            
+                if (level == 0)
+                {
+                    int productsCount = dataProvider.GetProductsCount(category);
+
+                    WriteLine(new String(' ', level * 2) + category.Name + " (" + productsCount + ")");
+                }
+                else
+                {
+                    WriteLine(new String(' ', level * 2) + category.Name);
+                }
                 foreach (Product product in category.Products)
                 {
                     WriteLine((new String(' ', (level + 1) * 2) + product.Name).PadRight(45) + product.Price);
                 }
-
+                
                 PrintCategory(dataProvider, category.ID, level + 1);
             }
            
