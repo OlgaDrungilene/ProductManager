@@ -130,8 +130,8 @@ namespace ProductManager
             product.ID= reader.GetInt32(0);
             product.ArticleNumber = reader.GetString(1);
             product.Name = reader.GetString(2);
-            product.ImageURL = reader.GetString(3);
-            product.Description = reader.GetString(4);
+            product.Description = reader.GetString(3);
+            product.ImageURL = reader.GetString(4);
             product.Price = reader.GetDecimal(5);
             
             return product;

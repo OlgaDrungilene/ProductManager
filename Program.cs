@@ -1,4 +1,4 @@
-﻿//using ProductManager.Models;
+﻿using ProductManager.Models;
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -253,8 +253,7 @@ namespace ProductManager
 
                             Thread.Sleep(2000);
 
-                            WaitForEscape();
-                        }
+                            }
                         else
                         {
                             WriteLine("Product not found");
@@ -350,16 +349,21 @@ namespace ProductManager
             {
                 dataProvider.PopulateCategoryProducts(category);
 
+                
                 if (level == 0)
                 {
+                    ForegroundColor = ConsoleColor.Green;
                     int productsCount = dataProvider.GetProductsCount(category);
 
                     WriteLine(new String(' ', level * 2) + category.Name + " (" + productsCount + ")");
                 }
+
                 else
                 {
+                    ForegroundColor = ConsoleColor.Red;
                     WriteLine(new String(' ', level * 2) + category.Name);
                 }
+                    ForegroundColor = ConsoleColor.White;
                 foreach (Product product in category.Products)
                 {
                     WriteLine((new String(' ', (level + 1) * 2) + product.Name).PadRight(45) + product.Price);
