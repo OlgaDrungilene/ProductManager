@@ -295,7 +295,7 @@ namespace ProductManager
                                 break;
                             }
 
-                            SetCursorPosition(16, 1);
+                            SetCursorPosition(17, 1);
                             string childCategory = ReadLine();
 
                             if (!dataProvider.IsCategoryPresent(childCategory))
