@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProductManager.Models
 {
-    internal class User
+    internal class UserInfo
     {
     }
 }

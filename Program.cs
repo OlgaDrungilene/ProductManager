@@ -84,7 +84,7 @@ namespace ProductManager
                     case ConsoleKey.D1:
                     case ConsoleKey.NumPad1:
 
-                        Product p = new();
+                        ProductInfo p = new();
                         do
                         {
                             Clear();
@@ -123,7 +123,7 @@ namespace ProductManager
                         //if (products.ContainsKey(articleNumber))
                         if (dataProvider.IsArticlePresent(articleNumber))
                         {
-                            Product a = dataProvider.GetProduct(articleNumber);
+                            ProductInfo a = dataProvider.GetProduct(articleNumber);
 
                             ConsoleKey key;
 
@@ -199,7 +199,7 @@ namespace ProductManager
 
                         } while (ReadKey(true).Key == ConsoleKey.N);
 
-                        Category category = new Category(name, description, imageURL);
+                        CategoryInfo category = new CategoryInfo(name, description, imageURL);
 
                         if (dataProvider.IsCategoryPresent(category.Name))
                         {
@@ -227,7 +227,7 @@ namespace ProductManager
                         if (dataProvider.IsArticlePresent(productArticleNumber))
 
                         {
-                            Product a = dataProvider.GetProduct(productArticleNumber);
+                            ProductInfo a = dataProvider.GetProduct(productArticleNumber);
 
                             Write("Category name: ");
 
@@ -341,11 +341,11 @@ namespace ProductManager
         {
             // 1. Få alla PARENTID = parentId 
 
-            List <Category> categories = dataProvider.GetAllCategories(parentId);
+            List <CategoryInfo> categories = dataProvider.GetAllCategories(parentId);
 
             // 2. För varje kategori, som vi får
 
-            foreach (Category category in categories)
+            foreach (CategoryInfo category in categories)
             {
                 dataProvider.PopulateCategoryProducts(category);
 
@@ -364,7 +364,7 @@ namespace ProductManager
                     WriteLine(new String(' ', level * 2) + category.Name);
                 }
                     ForegroundColor = ConsoleColor.White;
-                foreach (Product product in category.Products)
+                foreach (ProductInfo product in category.Products)
                 {
                     WriteLine((new String(' ', (level + 1) * 2) + product.Name).PadRight(45) + product.Price);
                 }
@@ -393,7 +393,7 @@ namespace ProductManager
         //    temporaryProductCategory.Products.Add(temporaryProduct);
         //    productCategory.Add(temporaryProductCategory.Name, temporaryProductCategory);
         //}
-        static void Print(Product p)
+        static void Print(ProductInfo p)
         {
             WriteLine($"ID:{p.ID}");
             WriteLine($"Article number:{p.ArticleNumber}");
@@ -422,7 +422,7 @@ namespace ProductManager
             imageURL = ReadLine();
         }
 
-        private static void AddProduct(Product p)
+        private static void AddProduct(ProductInfo p)
         {
             WriteLine("Article number:");
             WriteLine("Name:");

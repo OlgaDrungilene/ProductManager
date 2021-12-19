@@ -39,7 +39,7 @@ namespace ProductManager
             return true;
         }
 
-        public void SaveProduct(Product product)
+        public void SaveProduct(ProductInfo product)
         {
             string sql = @"
                 INSERT INTO Products (
@@ -98,7 +98,7 @@ namespace ProductManager
             return true;
         }
 
-        public Product GetProduct(string articleNumber)
+        public ProductInfo GetProduct(string articleNumber)
         {
              string sql = @"
                 SELECT ID,
@@ -126,7 +126,7 @@ namespace ProductManager
             
             return null;
 
-            Product product = new Product();
+            ProductInfo product = new ();
             product.ID= reader.GetInt32(0);
             product.ArticleNumber = reader.GetString(1);
             product.Name = reader.GetString(2);
@@ -158,7 +158,7 @@ namespace ProductManager
             return;
 
         }
-        public void AddCategory(Category category)
+        public void AddCategory(CategoryInfo category)
         {
             string sql = @"
                 INSERT INTO Categories (
@@ -210,7 +210,7 @@ namespace ProductManager
 
             return true;
         }
-        public void SaveProduct(string categoryName, Product product)
+        public void SaveProduct(string categoryName, ProductInfo product)
         {
             string sql = @"
                   INSERT INTO ProductsCategories (IDProduct, IDCategory) 
@@ -230,7 +230,7 @@ namespace ProductManager
 
              }
 
-        public void PopulateCategoryProducts(Category category)
+        public void PopulateCategoryProducts(CategoryInfo category)
         {
             string sql = @"
                 
@@ -257,7 +257,7 @@ namespace ProductManager
            
             while (reader.Read())
             {
-                Product p = new Product();
+                ProductInfo p = new ProductInfo();
                 p.ID = reader.GetInt32(0);
                 p.Name = reader.GetString(2);
                 p.Price = reader.GetDecimal(5);
@@ -265,10 +265,9 @@ namespace ProductManager
                 category.Products.Add(p);
                
             }
-            return;
         }
 
-        public List<Category> GetAllCategories()
+        public List<CategoryInfo> GetAllCategories()
         {
             string sql = @"
                 SELECT ID,
@@ -282,7 +281,7 @@ namespace ProductManager
           
             using SqlCommand command = new(sql, connection);
             
-            List<Category> categories = new List<Category>();
+            List<CategoryInfo> categories = new List<CategoryInfo>();
             connection.Open();
             
             var reader = command.ExecuteReader();
@@ -294,7 +293,7 @@ namespace ProductManager
                 var description = (string)reader["Description"];
                 var imageUrl = (string)reader["ImageUrl"];
 
-                Category productCategory = new(name, description, imageUrl)
+                CategoryInfo productCategory = new(name, description, imageUrl)
                 {
                     ID = id
                 };
@@ -303,7 +302,7 @@ namespace ProductManager
             return categories;
         }
 
-        internal bool IsProductInCategory(Product a, string categoryName)
+        internal bool IsProductInCategory(ProductInfo a, string categoryName)
         {
             string sql = @"
              SELECT COUNT(*) 
@@ -328,7 +327,7 @@ namespace ProductManager
 
             return true;
         }
-        public List<Category> GetAllCategories(int? parentId)
+        public List<CategoryInfo> GetAllCategories(int? parentId)
         {
             string sql = "";
 
@@ -362,7 +361,7 @@ namespace ProductManager
 
             command.CommandText = sql;
 
-            List<Category> categories = new List<Category>();
+            List<CategoryInfo> categories = new List<CategoryInfo>();
             connection.Open();
 
             var reader = command.ExecuteReader();
@@ -374,7 +373,7 @@ namespace ProductManager
                 var description = (string)reader["Description"];
                 var imageUrl = (string)reader["ImageUrl"];
 
-                Category productCategory = new(name, description, imageUrl)
+                CategoryInfo productCategory = new(name, description, imageUrl)
                 {
                     ID = id
                 };
@@ -403,7 +402,7 @@ namespace ProductManager
             command.ExecuteNonQuery();
 
            }
-     public int GetProductsCount(Category category)
+     public int GetProductsCount(CategoryInfo category)
         {
             string sql = @"
               WITH cte AS(

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProductManager
 {
-    public class Category
+    public class CategoryInfo
     {
         public int ID { get; set; }
         public string Name { get; private set; }
@@ -15,15 +15,15 @@ namespace ProductManager
 
         public string ImageUrl { get; private set; }
 
-        public List<Product> Products;
+        public List<ProductInfo> Products;
        
 
-        public Category( string name, string description, string imageUrl)
+        public CategoryInfo( string name, string description, string imageUrl)
         {
             Name = name;
             Description = description;
             ImageUrl = imageUrl;
-            Products = new List<Product>();
+            Products = new List<ProductInfo>();
            
         }
 

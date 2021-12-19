@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProductManager
 { 
-    public class Product
+    public class ProductInfo
     {
         public int ID { get; set; }
         public string ArticleNumber { get; set; }
