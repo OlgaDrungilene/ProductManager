@@ -17,90 +17,113 @@ namespace ProductManager
 
         public bool IsUserPresent(string userName, string password)
         {
-            string sql = @"
-              SELECT COUNT(*) FROM Users
-              WHERE Name = @Name AND Password = @Password
-            ";
-            using SqlConnection connection = new(ConnectionString);
+            //string sql = @"
+            //  SELECT COUNT(*) FROM Users
+            //  WHERE Name = @Name AND Password = @Password
+            //";
+            //using SqlConnection connection = new(ConnectionString);
 
-            using SqlCommand command = new(sql, connection);
+            //using SqlCommand command = new(sql, connection);
 
-            command.Parameters.AddWithValue("@Name", userName);
-            command.Parameters.AddWithValue("@Password", password);
+            //command.Parameters.AddWithValue("@Name", userName);
+            //command.Parameters.AddWithValue("@Password", password);
 
-            connection.Open();
+            //connection.Open();
 
-            var reader = command.ExecuteReader();
-            reader.Read();
+            //var reader = command.ExecuteReader();
+            //reader.Read();
 
-            if (reader.GetInt32(0) == 0)
-                return false;
+            //if (reader.GetInt32(0) == 0)
+            //    return false;
 
-            return true;
+            //return true;
+            using var context = new ProductManagerContext();
+            /*int usersCount = context.Users.Count(u => u.Name == userName && u.Password == password);
+            if (usersCount > 0)
+            {
+                return true;
+            }
+            return false;*/
+            return context.Users.Count(u => u.Name == userName && u.Password == password) > 0;
         }
 
         public void SaveProduct(ProductInfo product)
         {
-            string sql = @"
-                INSERT INTO Products (
-                    ArticleNumber,
-                    Name, 
-                    Description,
-                    ImageURL,
-                    Price
-                ) VALUES (
-                    @ArticleNumber,
-                    @Name,
-                    @Description,
-                    @ImageURL,
-                    @Price
-                )
-            ";
+            using var context = new ProductManagerContext();
+            context.Products.Add(
+            );
+            // TODO: implement 
+            //string sql = @"
+            //    INSERT INTO Products (
+            //        ArticleNumber,
+            //        Name, 
+            //        Description,
+            //        ImageURL,
+            //        Price
+            //    ) VALUES (
+            //        @ArticleNumber,
+            //        @Name,
+            //        @Description,
+            //        @ImageURL,
+            //        @Price
+            //    )
+            //";
 
-            using SqlConnection connection = new(ConnectionString);
+            //using SqlConnection connection = new(ConnectionString);
 
-            using SqlCommand command = new(sql, connection);
+            //using SqlCommand command = new(sql, connection);
 
-            command.Parameters.AddWithValue("@ID", product.ID);
-            command.Parameters.AddWithValue("@ArticleNumber", product.ArticleNumber);
-            command.Parameters.AddWithValue("@Name", product.Name);
-            command.Parameters.AddWithValue("@Description", product.Description);
-            command.Parameters.AddWithValue("@ImageURL", product.ImageURL);
-            command.Parameters.AddWithValue("@Price", product.Price);
+            //command.Parameters.AddWithValue("@ArticleNumber", product.ArticleNumber);
+            //command.Parameters.AddWithValue("@Name", product.Name);
+            //command.Parameters.AddWithValue("@Description", product.Description);
+            //command.Parameters.AddWithValue("@ImageURL", product.ImageURL);
+            //command.Parameters.AddWithValue("@Price", product.Price);
 
-            connection.Open();
+            //connection.Open();
 
-            command.ExecuteNonQuery();
+            //command.ExecuteNonQuery();
 
-            connection.Close();
+            //connection.Close();
         }
 
         public bool IsArticlePresent(string articleNumber)
         {
-            string sql = @"
-              SELECT COUNT(*) FROM Products
-              WHERE ArticleNumber = @ArticleNumber;
-            ";
-            using SqlConnection connection = new(ConnectionString);
+            //string sql = @"
+            //  SELECT COUNT(*) FROM Products
+            //  WHERE ArticleNumber = @ArticleNumber;
+            //";
+            //using SqlConnection connection = new(ConnectionString);
 
-            using SqlCommand command = new(sql, connection);
+            //using SqlCommand command = new(sql, connection);
             
-            command.Parameters.AddWithValue("@ArticleNumber", articleNumber);
+            //command.Parameters.AddWithValue("@ArticleNumber", articleNumber);
 
-            connection.Open();
+            //connection.Open();
 
-            var reader = command.ExecuteReader();
-            reader.Read();
+            //var reader = command.ExecuteReader();
+            //reader.Read();
 
-             if (reader.GetInt32(0) == 0)
-             return false;
+            // if (reader.GetInt32(0) == 0)
+            // return false;
 
-            return true;
+            //return true;
+            using var context = new ProductManagerContext();
+            return context.Products.Count(p => p.ArticleNumber==articleNumber) > 0;
         }
 
         public ProductInfo GetProduct(string articleNumber)
         {
-             string sql = @"
+            using var context = new ProductManagerContext();
+            return context.Products.Where(p => p.ArticleNumber == articleNumber).Select(p => new ProductInfo
+            {
+                ID = p.Id,
+                Name = p.Name,
+                Description = p.Description,
+                ArticleNumber = p.ArticleNumber,
+                ImageURL = p.ImageUrl,
+                Price = p.Price,
+            }).FirstOrDefault();
+            /* string sql = @"
                 SELECT ID,
                        ArticleNumber,
                        Name,
@@ -134,11 +157,13 @@ namespace ProductManager
             product.ImageURL = reader.GetString(4);
             product.Price = reader.GetDecimal(5);
             
-            return product;
+            return product;*/
+
         }
 
         public void RemoveProduct(string articleNumber)
         {
+            // TODO: implement 
             string sql = @"
                     DELETE FROM Products 
                     WHERE ArticleNumber = @articleNumber
@@ -160,6 +185,7 @@ namespace ProductManager
         }
         public void AddCategory(CategoryInfo category)
         {
+            // TODO: implement
             string sql = @"
                 INSERT INTO Categories (
                     Name, 
@@ -190,6 +216,7 @@ namespace ProductManager
 
         public bool IsCategoryPresent(string name)
         {
+            // TODO: implement
             string sql = @"
               SELECT COUNT(*) FROM Categories
               WHERE Name = @Category;
@@ -269,6 +296,8 @@ namespace ProductManager
 
         public List<CategoryInfo> GetAllCategories()
         {
+            // TODO: implement
+            // return context.Categories.Select(c => new CategoryInfo {`... }).ToList();
             string sql = @"
                 SELECT ID,
                        Name,
@@ -329,6 +358,7 @@ namespace ProductManager
         }
         public List<CategoryInfo> GetAllCategories(int? parentId)
         {
+            // TODO: implement
             string sql = "";
 
             using SqlConnection connection = new(ConnectionString);
