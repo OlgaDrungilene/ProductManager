@@ -50,8 +50,18 @@ namespace ProductManager
         public void SaveProduct(ProductInfo product)
         {
             using var context = new ProductManagerContext();
-            context.Products.Add(
-            );
+            {
+                Product p = new Product();
+                p.ArticleNumber = product.ArticleNumber;
+                p.Name = product.Name;
+                p.Description = product.Description;
+                p.ImageUrl = product.ImageURL;
+                p.Price = product.Price;
+
+                context.Products.Add(p);
+                context.SaveChanges();
+
+            }
             // TODO: implement 
             //string sql = @"
             //    INSERT INTO Products (
@@ -164,23 +174,27 @@ namespace ProductManager
         public void RemoveProduct(string articleNumber)
         {
             // TODO: implement 
-            string sql = @"
-                    DELETE FROM Products 
-                    WHERE ArticleNumber = @articleNumber
-            ";
+            using var context = new ProductManagerContext();
+            Product product = context.Products.FirstOrDefault(p => p.ArticleNumber == articleNumber);
+            context.Products.Remove(product);
+                        
+            //string sql = @"
+            //        DELETE FROM Products 
+            //        WHERE ArticleNumber = @articleNumber
+            //";
 
-            using SqlConnection connection = new(ConnectionString);
+            //using SqlConnection connection = new(ConnectionString);
 
-            using SqlCommand command = new(sql, connection);
+            //using SqlCommand command = new(sql, connection);
 
-            command.Parameters.AddWithValue("@articleNumber", articleNumber);
+            //command.Parameters.AddWithValue("@articleNumber", articleNumber);
 
-            connection.Open();
+            //connection.Open();
 
-            command.ExecuteNonQuery();
+            //command.ExecuteNonQuery();
 
-            connection.Close();
-            return;
+            //connection.Close();
+            //return;
 
         }
         public void AddCategory(CategoryInfo category)
@@ -238,24 +252,36 @@ namespace ProductManager
             return true;
         }
         public void SaveProduct(string categoryName, ProductInfo product)
+
         {
-            string sql = @"
-                  INSERT INTO ProductsCategories (IDProduct, IDCategory) 
-                  (SELECT @productId, ID FROM Categories WHERE Name = @categoryName)
-            ";
+            using var context = new ProductManagerContext();
+            {
+                ProductsCategory p = new ProductsCategory();
+                p.Idproduct = product.ID;
+                Category c = context.Categories.FirstOrDefault(c => c.Name == categoryName);
+                p.Idcategory = c.Id;
+                
+                context.ProductsCategories.Add(p);
+                context.SaveChanges();
 
-             using SqlConnection connection = new(ConnectionString);
+            }
+            //string sql = @"
+            //      INSERT INTO ProductsCategories (IDProduct, IDCategory) 
+            //      (SELECT @productId, ID FROM Categories WHERE Name = @categoryName)
+            //";
 
-             using SqlCommand command = new(sql, connection);
+            // using SqlConnection connection = new(ConnectionString);
 
-             command.Parameters.AddWithValue("@categoryName", categoryName);
-             command.Parameters.AddWithValue("@productId", product.ID);
+            // using SqlCommand command = new(sql, connection);
 
-             connection.Open();
+            // command.Parameters.AddWithValue("@categoryName", categoryName);
+            // command.Parameters.AddWithValue("@productId", product.ID);
 
-             command.ExecuteNonQuery();
+            // connection.Open();
 
-             }
+            // command.ExecuteNonQuery();
+
+        }
 
         public void PopulateCategoryProducts(CategoryInfo category)
         {
@@ -333,28 +359,34 @@ namespace ProductManager
 
         internal bool IsProductInCategory(ProductInfo a, string categoryName)
         {
-            string sql = @"
-             SELECT COUNT(*) 
-               FROM ProductsCategories 
-              WHERE IDProduct = @IDProduct AND IDCategory IN (SELECT ID FROM Categories WHERE Name = @Name)
+            using var context = new ProductManagerContext();
+            int count = context.ProductsCategories.Count(x => x.IdproductNavigation.Id == a.ID && x.IdcategoryNavigation.Name == categoryName);
 
-            ";
-            using SqlConnection connection = new(ConnectionString);
+            return count > 0;
+            
 
-            using SqlCommand command = new(sql, connection);
+                        //string sql = @"
+            // SELECT COUNT(*) 
+            //   FROM ProductsCategories 
+            //  WHERE IDProduct = @IDProduct AND IDCategory IN (SELECT ID FROM Categories WHERE Name = @Name)
 
-            command.Parameters.AddWithValue("@IDProduct", a.ID);
-            command.Parameters.AddWithValue("@Name", categoryName);
+            //";
+            //using SqlConnection connection = new(ConnectionString);
 
-            connection.Open();
+            //using SqlCommand command = new(sql, connection);
 
-            var reader = command.ExecuteReader();
-            reader.Read();
+            //command.Parameters.AddWithValue("@IDProduct", a.ID);
+            //command.Parameters.AddWithValue("@Name", categoryName);
 
-            if (reader.GetInt32(0) == 0)
-                return false;
+            //connection.Open();
 
-            return true;
+            //var reader = command.ExecuteReader();
+            //reader.Read();
+
+            //if (reader.GetInt32(0) == 0)
+            //    return false;
+
+            //return true;
         }
         public List<CategoryInfo> GetAllCategories(int? parentId)
         {
