@@ -337,39 +337,44 @@ namespace ProductManager
 
         public List<CategoryInfo> GetAllCategories()
         {
+            using var context = new ProductManagerContext();
+            {
+                return context.Categories.Select(c => new CategoryInfo(c.Name, c.Description,c.ImageUrl)
+                ).ToList();
+            }
             // TODO: implement
             // return context.Categories.Select(c => new CategoryInfo {`... }).ToList();
-            string sql = @"
-                SELECT ID,
-                       Name,
-                       Description,
-                       ImageUrl
-                 FROM  Categories
-            ";
+            //string sql = @"
+            //    SELECT ID,
+            //           Name,
+            //           Description,
+            //           ImageUrl
+            //     FROM  Categories
+            //";
 
-            using SqlConnection connection = new(ConnectionString);
+            //using SqlConnection connection = new(ConnectionString);
           
-            using SqlCommand command = new(sql, connection);
+            //using SqlCommand command = new(sql, connection);
             
-            List<CategoryInfo> categories = new List<CategoryInfo>();
-            connection.Open();
+            //List<CategoryInfo> categories = new List<CategoryInfo>();
+            //connection.Open();
             
-            var reader = command.ExecuteReader();
+            //var reader = command.ExecuteReader();
 
-            while (reader.Read())
-            {
-                var id = (int)reader["ID"];
-                var name = (string)reader["Name"];
-                var description = (string)reader["Description"];
-                var imageUrl = (string)reader["ImageUrl"];
+            //while (reader.Read())
+            //{
+            //    var id = (int)reader["ID"];
+            //    var name = (string)reader["Name"];
+            //    var description = (string)reader["Description"];
+            //    var imageUrl = (string)reader["ImageUrl"];
 
-                CategoryInfo productCategory = new(name, description, imageUrl)
-                {
-                    ID = id
-                };
-                categories.Add(productCategory);
-            }
-            return categories;
+            //    CategoryInfo productCategory = new(name, description, imageUrl)
+            //    {
+            //        ID = id
+            //    };
+            //    categories.Add(productCategory);
+            //}
+            //return categories;
         }
 
         internal bool IsProductInCategory(ProductInfo a, string categoryName)
@@ -405,58 +410,65 @@ namespace ProductManager
         }
         public List<CategoryInfo> GetAllCategories(int? parentId)
         {
-            // TODO: implement
-            string sql = "";
-
-            using SqlConnection connection = new(ConnectionString);
-
-            using SqlCommand command = connection.CreateCommand();
-
-            if (parentId == null)
+            using var context = new ProductManagerContext();
             {
-                sql = @"
-                SELECT ID,
-                       Name,
-                       Description,
-                       ImageUrl
-                 FROM  Categories
-                 WHERE IDParent IS NULL
-                ";                
-            } 
-            else
-            {
-                sql = @"
-                SELECT ID,
-                       Name,
-                       Description,
-                       ImageUrl
-                 FROM  Categories
-                 WHERE IDParent = @parentId
-                ";
-                command.Parameters.AddWithValue("@parentId", parentId);
-            }
-
-            command.CommandText = sql;
-
-            List<CategoryInfo> categories = new List<CategoryInfo>();
-            connection.Open();
-
-            var reader = command.ExecuteReader();
-
-            while (reader.Read())
-            {
-                var id = (int)reader["ID"];
-                var name = (string)reader["Name"];
-                var description = (string)reader["Description"];
-                var imageUrl = (string)reader["ImageUrl"];
-
-                CategoryInfo productCategory = new(name, description, imageUrl)
+                return context.Categories.Where (c=>c.Idparent==parentId).Select(c => new CategoryInfo(c.Name, c.Description, c.ImageUrl)
                 {
-                    ID = id
-                };
-                categories.Add(productCategory);
-            }
-            return categories;
+                    ID = c.Id
+                }
+                ).ToList();
+            }            //// TODO: implement
+            //string sql = "";
+
+            //using SqlConnection connection = new(ConnectionString);
+
+            //using SqlCommand command = connection.CreateCommand();
+
+            //if (parentId == null)
+            //{
+            //    sql = @"
+            //    SELECT ID,
+            //           Name,
+            //           Description,
+            //           ImageUrl
+            //     FROM  Categories
+            //     WHERE IDParent IS NULL
+            //    ";                
+            //} 
+            //else
+            //{
+            //    sql = @"
+            //    SELECT ID,
+            //           Name,
+            //           Description,
+            //           ImageUrl
+            //     FROM  Categories
+            //     WHERE IDParent = @parentId
+            //    ";
+            //    command.Parameters.AddWithValue("@parentId", parentId);
+            //}
+
+            //command.CommandText = sql;
+
+            //List<CategoryInfo> categories = new List<CategoryInfo>();
+            //connection.Open();
+
+            //var reader = command.ExecuteReader();
+
+            //while (reader.Read())
+            //{
+            //    var id = (int)reader["ID"];
+            //    var name = (string)reader["Name"];
+            //    var description = (string)reader["Description"];
+            //    var imageUrl = (string)reader["ImageUrl"];
+
+            //    CategoryInfo productCategory = new(name, description, imageUrl)
+            //    {
+            //        ID = id
+            //    };
+            //    categories.Add(productCategory);
+            //}
+            //return categories;
 
         }
        public void AddCategoryToCategory(string parentCategory,string childCategory)
