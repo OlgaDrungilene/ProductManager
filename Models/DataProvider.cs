@@ -199,33 +199,44 @@ namespace ProductManager
         }
         public void AddCategory(CategoryInfo category)
         {
+            using var context = new ProductManagerContext();
+            {
+                Category c = new Category();
+                c.Name = category.Name;
+                c.Description = category.Description;
+                c.ImageUrl = category.ImageUrl;
+
+                context.Categories.Add(c);
+                context.SaveChanges();
+
+            }
             // TODO: implement
-            string sql = @"
-                INSERT INTO Categories (
-                    Name, 
-                    Description,
-                    ImageURL
-                ) VALUES (
-                    @Name,
-                    @Description,
-                    @ImageURL
-                )
-            ";
+            //string sql = @"
+            //    INSERT INTO Categories (
+            //        Name, 
+            //        Description,
+            //        ImageURL
+            //    ) VALUES (
+            //        @Name,
+            //        @Description,
+            //        @ImageURL
+            //    )
+            //";
 
-            using SqlConnection connection = new(ConnectionString);
+            //using SqlConnection connection = new(ConnectionString);
 
-            using SqlCommand command = new(sql, connection);
+            //using SqlCommand command = new(sql, connection);
 
-            command.Parameters.AddWithValue("@Name", category.Name);
-            command.Parameters.AddWithValue("@Description", category.Description);
-            command.Parameters.AddWithValue("@ImageURL", category.ImageUrl);
+            //command.Parameters.AddWithValue("@Name", category.Name);
+            //command.Parameters.AddWithValue("@Description", category.Description);
+            //command.Parameters.AddWithValue("@ImageURL", category.ImageUrl);
 
-            connection.Open();
+            //connection.Open();
 
-            command.ExecuteNonQuery();
+            //command.ExecuteNonQuery();
 
-            connection.Close();
-            return;
+            //connection.Close();
+            //return;
         }
 
         public bool IsCategoryPresent(string name)
