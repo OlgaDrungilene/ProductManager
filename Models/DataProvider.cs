@@ -300,39 +300,52 @@ namespace ProductManager
 
         public void PopulateCategoryProducts(CategoryInfo category)
         {
-            string sql = @"
-                
-                SELECT ID,
-                       ArticleNumber,
-                       Name,
-                       Description,
-                       ImageURL,
-                       Price
-                  FROM Products
-                 WHERE ID IN 
-				 (SELECT IDProduct FROM ProductsCategories WHERE IDCategory = @idCategory)
-            ";
-
-            using SqlConnection connection = new(ConnectionString);
-
-            using SqlCommand command = new(sql, connection);
-
-            command.Parameters.AddWithValue("@idCategory", category.ID);
-
-            connection.Open();
-
-            var reader = command.ExecuteReader();
-           
-            while (reader.Read())
-            {
-                ProductInfo p = new ProductInfo();
-                p.ID = reader.GetInt32(0);
-                p.Name = reader.GetString(2);
-                p.Price = reader.GetDecimal(5);
-                
-                category.Products.Add(p);
+            using var context = new ProductManagerContext();
+            category.Products = context.Categories.
+                Where(c => c.Id == category.ID).
+                SelectMany(c => c.ProductsCategories).
+                Select(p => p.IdProductNavigation).
+                Select(p => new ProductInfo {
+                ArticleNumber = p.ArticleNumber,
+                Name = p.Name,
+                Description = p.Description,
+                ImageURL=p.ImageUrl,
+                Price = p.Price,
+                }).ToList();
                
-            }
+            //       string sql = @"
+                
+     //           SELECT ID,
+     //                  ArticleNumber,
+     //                  Name,
+     //                  Description,
+     //                  ImageURL,
+     //                  Price
+     //             FROM Products
+     //            WHERE ID IN 
+				 //(SELECT IDProduct FROM ProductsCategories WHERE IDCategory = @idCategory)
+     //       ";
+
+     //       using SqlConnection connection = new(ConnectionString);
+
+     //       using SqlCommand command = new(sql, connection);
+
+     //       command.Parameters.AddWithValue("@idCategory", category.ID);
+
+     //       connection.Open();
+
+     //       var reader = command.ExecuteReader();
+           
+     //       while (reader.Read())
+     //       {
+     //           ProductInfo p = new ProductInfo();
+     //           p.ID = reader.GetInt32(0);
+     //           p.Name = reader.GetString(2);
+     //           p.Price = reader.GetDecimal(5);
+                
+     //           category.Products.Add(p);
+               
+     //       }
         }
 
         public List<CategoryInfo> GetAllCategories()
