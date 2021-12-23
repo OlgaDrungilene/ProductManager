@@ -486,24 +486,39 @@ namespace ProductManager
         }
        public void AddCategoryToCategory(string parentCategory,string childCategory)
        
-        {  
-            string sql = @"
-                 UPDATE Categories SET IDParent = (SELECT ID FROM Categories WHERE Name = @ParentCategory)
-                  WHERE Name = @ChildCategory
-            ";
+        {
+            using var context = new ProductManagerContext();
 
-            using SqlConnection connection = new (ConnectionString);
+            var pcat = context.Categories.FirstOrDefault(c => c.Name == parentCategory);
 
-            using SqlCommand command = new (sql, connection);
+            if (pcat == null)
+                return;
 
-            command.Parameters.AddWithValue("@ParentCategory", parentCategory);
-            command.Parameters.AddWithValue("@ChildCategory", childCategory);
-            
-            connection.Open();
+            var ccat = context.Categories.FirstOrDefault(x => x.Name == childCategory);
 
-            command.ExecuteNonQuery();
+            if (ccat == null)
+                return;
 
-           }
+            ccat.Idparent = pcat.Id;
+            context.SaveChanges();
+
+            //string sql = @"
+            //     UPDATE Categories SET IDParent = (SELECT ID FROM Categories WHERE Name = @ParentCategory)
+            //      WHERE Name = @ChildCategory
+            //";
+
+            //using SqlConnection connection = new (ConnectionString);
+
+            //using SqlCommand command = new (sql, connection);
+
+            //command.Parameters.AddWithValue("@ParentCategory", parentCategory);
+            //command.Parameters.AddWithValue("@ChildCategory", childCategory);
+
+            //connection.Open();
+
+            //command.ExecuteNonQuery();
+
+        }
      public int GetProductsCount(CategoryInfo category)
         {
             string sql = @"
