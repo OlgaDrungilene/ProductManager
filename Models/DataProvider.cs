@@ -257,9 +257,9 @@ namespace ProductManager
             using var context = new ProductManagerContext();
             {
                 ProductsCategory p = new ProductsCategory();
-                p.Idproduct = product.ID;
+                p.IdProduct = product.ID;
                 Category c = context.Categories.FirstOrDefault(c => c.Name == categoryName);
-                p.Idcategory = c.Id;
+                p.IdCategory = c.Id;
                 
                 context.ProductsCategories.Add(p);
                 context.SaveChanges();
@@ -360,7 +360,7 @@ namespace ProductManager
         internal bool IsProductInCategory(ProductInfo a, string categoryName)
         {
             using var context = new ProductManagerContext();
-            int count = context.ProductsCategories.Count(x => x.IdproductNavigation.Id == a.ID && x.IdcategoryNavigation.Name == categoryName);
+            int count = context.ProductsCategories.Count(x => x.IdProductNavigation.Id == a.ID && x.IdCategoryNavigation.Name == categoryName);
 
             return count > 0;
             

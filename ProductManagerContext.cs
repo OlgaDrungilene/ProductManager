@@ -79,24 +79,24 @@ namespace ProductManager
 
             modelBuilder.Entity<ProductsCategory>(entity =>
             {
-                entity.HasIndex(e => new { e.Idproduct, e.Idcategory }, "IDProductCategory")
+                entity.HasIndex(e => new { e.IdProduct, e.IdCategory }, "IDProductCategory")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("ID");
 
-                entity.Property(e => e.Idcategory).HasColumnName("IDCategory");
+                entity.Property(e => e.IdCategory).HasColumnName("IDCategory");
 
-                entity.Property(e => e.Idproduct).HasColumnName("IDProduct");
+                entity.Property(e => e.IdProduct).HasColumnName("IDProduct");
 
-                entity.HasOne(d => d.IdcategoryNavigation)
+                entity.HasOne(d => d.IdCategoryNavigation)
                     .WithMany(p => p.ProductsCategories)
-                    .HasForeignKey(d => d.Idcategory)
+                    .HasForeignKey(d => d.IdCategory)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK__ProductsC__IDCat__17036CC0");
 
-                entity.HasOne(d => d.IdproductNavigation)
+                entity.HasOne(d => d.IdProductNavigation)
                     .WithMany(p => p.ProductsCategories)
-                    .HasForeignKey(d => d.Idproduct)
+                    .HasForeignKey(d => d.IdProduct)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK__ProductsC__IDPro__160F4887");
             });
