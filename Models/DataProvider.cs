@@ -230,26 +230,30 @@ namespace ProductManager
 
         public bool IsCategoryPresent(string name)
         {
+            using var context = new ProductManagerContext();
+            {
+                return context.Categories.Count(c => c.Name == name) > 0;
+            }
             // TODO: implement
-            string sql = @"
-              SELECT COUNT(*) FROM Categories
-              WHERE Name = @Category;
-            ";
-            using SqlConnection connection = new(ConnectionString);
+            //string sql = @"
+            //  SELECT COUNT(*) FROM Categories
+            //  WHERE Name = @Category;
+            //";
+            //using SqlConnection connection = new(ConnectionString);
 
-            using SqlCommand command = new(sql, connection);
+            //using SqlCommand command = new(sql, connection);
 
-            command.Parameters.AddWithValue("@Category", name);
+            //command.Parameters.AddWithValue("@Category", name);
 
-            connection.Open();
+            //connection.Open();
 
-            var reader = command.ExecuteReader();
-            reader.Read();
+            //var reader = command.ExecuteReader();
+            //reader.Read();
 
-            if (reader.GetInt32(0) == 0)
-            return false;
+            //if (reader.GetInt32(0) == 0)
+            //return false;
 
-            return true;
+            //return true;
         }
         public void SaveProduct(string categoryName, ProductInfo product)
 
