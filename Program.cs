@@ -353,17 +353,19 @@ namespace ProductManager
                 if (level == 0)
                 {
                     ForegroundColor = ConsoleColor.Green;
-                    int productsCount = dataProvider.GetProductsCount(category);
 
-                    WriteLine(new String(' ', level * 2) + category.Name + " (" + productsCount + ")");
                 }
 
                 else
                 {
                     ForegroundColor = ConsoleColor.Red;
-                    WriteLine(new String(' ', level * 2) + category.Name);
                 }
-                    ForegroundColor = ConsoleColor.White;
+
+                int productsCount = dataProvider.GetProductsCount(category);
+
+                WriteLine(new String(' ', level * 2) + category.Name + " (" + productsCount + ")");
+
+                ForegroundColor = ConsoleColor.White;
                 foreach (ProductInfo product in category.Products)
                 {
                     WriteLine((new String(' ', (level + 1) * 2) + product.Name).PadRight(45) + product.Price);
